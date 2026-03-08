@@ -1,9 +1,12 @@
-//===game logic js===
-const game1 = require("./games/playAnotherDay"); //playAnotherDay
-
-const players_map = {
-  game1: { min: 2, max: 5 },
+//===game info===
+const game_info_map = {
+  game1: {
+    players: { min: 2, max: 5 },
+    logic: require("./games/playAnotherDay"),
+    link: "/games/playAnotherDay/index.html",
+  },
 };
+
 //===Client recieve/send===
 module.exports = (io) => {
   const rooms = {};
@@ -38,9 +41,8 @@ module.exports = (io) => {
         }
       }
 
-      const players_min = players_map[game_type]?.min;
-      const players_max = players_map[game_type]?.max;
-      if (!(players_min == null || players_max == null)) {
+      const game = game_info_map[game_type];
+      if (game == null) {
         console.log("SH: game_not_found:", game_type);
         socket.emit("unsuccess", {
           status: null,
@@ -52,8 +54,10 @@ module.exports = (io) => {
       rooms[room_code] = {
         game_info: {
           type: game_type,
-          players_min: players_min,
-          players_max: players_max,
+          logic: game.logic,
+          players_min: game.players.min,
+          players_max: game.players.max,
+          link: game.link,
         },
         is_in_game: false,
         is_transition_progress: false,
@@ -215,14 +219,12 @@ module.exports = (io) => {
 
       room.is_transition_progress = true;
       //gameのInit
-      if (room.game_info.type == "game1") {
-        io.to(room_code).emit("status_updated", {
-          status: room,
-          type: "room_ready",
-          link: "/games/playAnotherDay/index.html",
-        });
-        room.status = game1.status_init(room.status);
-      }
+      io.to(room_code).emit("status_updated", {
+        status: room,
+        type: "room_ready",
+        link: room.game_info.link,
+      });
+      room.status = room.game_info.logic.status_init(room.status);
     });
 
     socket.on("complete_reconnection", (room_code) => {
@@ -292,52 +294,44 @@ module.exports = (io) => {
       const { room_code, move } = data;
 
       const room = rooms[room_code];
-      if (!room) return;
+      if (!room) {
+        console.log("SH: room_not_found: ", room_code);
+        socket.emit("unsuccess", {
+          status: null,
+          type: "room_not_found",
+        });
+        return;
+      }
 
-      const result = game1.make_move(room.status, move);
-      if (result == "exit_game") {
+      const { result, reason } = room.game_info.logic.check_move(
+        room.status,
+        move,
+      );
+
+      if (!result) {
+        socket.emit("unsuccess", {
+          status: room.status,
+          move: move,
+          reason: reason,
+        });
+        return;
+      }
+
+      const new_status = room.game_info.logic.make_move(room.status, move);
+
+      if (new_status == "exit_game") {
         exit_game(room_code);
         return;
       }
-      room.status = result;
 
-      io.to(room_code).emit("update_state", room.status);
-    });
+      room.status = new_status;
 
-    //---send player try to game logic---
-    socket.on("player_try", (data) => {
-      console.log("SH: get_try");
-      const { room_code, submittion } = data;
-
-      const room = rooms[room_code];
-
-      if (!room) {
-        console.log("SH: room_not_found: ", room_code);
-        socket.emit("can_submit", {
-          can_submit: false,
-          status: null,
-          submittion,
-        });
-        return;
-      }
-
-      if (!room.players.every((p) => p.connection)) {
-        console.log("SH: some_player_disconnected: ", room_code);
-        socket.emit("can_submit", {
-          can_submit: false,
-          status: null,
-          submittion,
-        });
-      }
-
-      const can_submit = game1.check_submittion(room.status, submittion);
-
-      console.log("SH: can_submit?: ", can_submit);
-      socket.emit("can_submit", {
-        can_submit,
+      socket.emit("success", {
         status: room.status,
-        submittion,
+        type: "submittion_applied",
       });
+
+      io.to(room_code).emit("status_updated", room.status);
     });
 
     socket.on("exit_game", (data) => {
@@ -348,7 +342,15 @@ module.exports = (io) => {
     function exit_game(room_code) {
       console.log("SH: get_exit");
 
-      if (!rooms[room_code]) return;
+      const room = rooms[room_code];
+      if (!room) {
+        console.log("SH: room_not_found: ", room_code);
+        socket.emit("unsuccess", {
+          status: null,
+          type: "room_not_found",
+        });
+        return;
+      }
 
       io.to(room_code).emit("exit_game");
 
@@ -366,8 +368,15 @@ module.exports = (io) => {
       if (reason == "server namespace disconnect") return;
       if (reason == "client namespace disconnect") return;
 
-      let room = find_room_by_socket(socket.id);
-      if (!room) return;
+      const room = find_room_by_socket(socket.id);
+      if (!room) {
+        console.log("SH: room_not_found: ");
+        socket.emit("unsuccess", {
+          status: null,
+          type: "room_not_found",
+        });
+        return;
+      }
 
       if (room.is_transition_progress) {
         return;
@@ -379,21 +388,26 @@ module.exports = (io) => {
       }
 
       const player = room.players.find((p) => p.id == socket.id);
-      if (!player) return;
+      if (!player) {
+        console.log("SH: player_not_found: ", socket.id);
+        socket.emit("unsuccess", {
+          status: room,
+          type: "player_not_found",
+        });
+        return;
+      }
 
       player.ready = false;
       player.connection = false;
 
-      switch (room.game_info.type) {
-        case "game1":
-          room.status = game1.on_disconnected(room.status, socket.id);
-          break;
-      }
+      room.status = room.game_info.logic.on_disconnected(
+        room.status,
+        socket.id,
+      );
 
       room.disconnected = room.disconnected || {};
       room.disconnected[socket.id] = setTimeout(() => {
         remove_player_from_room(socket.id, room);
-        //一人抜けたときの処理
         exit_game(room.status.room_code);
       }, 30000);
     });
@@ -404,9 +418,23 @@ module.exports = (io) => {
       console.log("SH: get_handshake");
 
       const room = rooms[room_code];
-      if (!room) return;
+      if (!room) {
+        console.log("SH: room_not_found: ", room_code);
+        socket.emit("unsuccess", {
+          status: null,
+          type: "room_not_found",
+        });
+        return;
+      }
       const player = room.players.find((p) => p.id == old_id);
-      if (!player) return;
+      if (!player) {
+        console.log("SH: player_not_found: ", old_id);
+        socket.emit("unsuccess", {
+          status: room,
+          type: "player_not_found",
+        });
+        return;
+      }
 
       const timeOut = room.disconnected[old_id];
       if (timeOut) clearTimeout(timeOut);
@@ -420,10 +448,13 @@ module.exports = (io) => {
       }
 
       socket.join(room_code);
-      socket.emit("update_id", socket.id);
+      socket.emit("success", {
+        status: room.status,
+        type: "id_updated",
+      });
 
       if (room.is_in_game) {
-        io.to(room_code).emit("update_state", room.status);
+        io.to(room_code).emit("status_updated", room.status);
       }
 
       console.log("SH: update_id", old_id, " => ", socket.id);
@@ -432,7 +463,11 @@ module.exports = (io) => {
     function exit_room(socket_id) {
       const room = find_room_by_socket(socket_id);
       if (!room) {
-        console.log("SH: room_not_found");
+        console.log("SH: room_not_found: ");
+        socket.emit("unsuccess", {
+          status: null,
+          type: "room_not_found",
+        });
         return;
       }
 
@@ -462,7 +497,7 @@ module.exports = (io) => {
         p.ready = false;
       });
 
-      io.to(room_code).emit("player_exit", room);
+      io.to(room_code).emit("status_updated", room);
 
       console.log(io.sockets.adapter.rooms);
     }
