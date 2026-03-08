@@ -1,0 +1,23 @@
+{
+  "ui": {
+    "submit": "決定",
+    "close": "閉じる",
+    "back": "戻る",
+    "open_score": "スコアを見る",
+    "user_name": "名前",
+    "point": "得点",
+    "tip": "ご飯チップ",
+    "ready": "レディー",
+    "exit": "退出",
+    "exit_notes": "本当にゲームから退出しますか？"
+  },
+  "rule": {
+    "game1": {
+      "rule": "ルール説明",
+      "purpose": "ゲームの目的",
+      "victory_condition": "勝利条件",
+      "steps": "ゲームの流れ",
+      "": ""
+    }
+  }
+}

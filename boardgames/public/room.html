@@ -1,0 +1,56 @@
+<html>
+  <header>
+    <meta charset="utf-8" />
+    <title>room</title>
+    <link rel="stylesheet" href="style.css" />
+  </header>
+  <body>
+    <div id="wrapper">
+      <div id="top_menu">
+        <button id="open_exit">⍇</button>
+        <div id="room_code_container"></div>
+        <button id="open_setting">⚙</button>
+      </div>
+      <div id="center_menu">
+        <div class="room_modal" id="room_manager_modal">
+          <button id="create_room" data-i18n="ui.create"></button>
+          <button id="open_join" data-i18n="ui.join"></button>
+        </div>
+        <div class="room_modal hidden" id="room_wait_modal">
+          <div id="player_list">
+            <table>
+              <tbody></tbody>
+            </table>
+          </div>
+          <span id="player_num"></span>
+        </div>
+      </div>
+      <div id="bottom_menu">
+        <button id="ready" data-i18n="ui.ready"></button>
+      </div>
+
+      <div id="overlay" class="hidden">
+        <div class="modal hidden" id="join_modal">
+          <input type="text" inputmode="numeric" id="room_code" />
+          <button id="join_room" data-i18n="ui.join"></button>
+        </div>
+        <div class="modal hidden" id="exit_modal">
+          <span id="exit_notes" data-i18n="ui.exit_notes"></span>
+          <div id="button_group">
+            <button id="exit_room" data-i18n="ui.exit"></button>
+            <button id="close_exit" data-i18n="ui.back"></button>
+          </div>
+        </div>
+        <div class="modal hidden" id="setting_modal">
+          <div id="setting"></div>
+          <div id="rule_container">
+            <h1 data-i18n="rule."></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Socket.IO クライアント -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/room.js"></script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "ui": {
+    "close": "close",
+    "back": "back",
+    "open_score": "score",
+    "user_name": "player",
+    "point": "point",
+    "tip": "food tip",
+    "ready": "ready",
+    "exit": "exit",
+    "exit_notes": "Do you really exit game?"
+  },
+  "rule": {
+    "game1": {
+      "step1": ""
+    }
+  }
+}

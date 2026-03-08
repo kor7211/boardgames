@@ -1,0 +1,25 @@
+Boardgames 制作メモ
+----------------
+local server 立て方
+cd -> ./boardgames/
+node ./server/server.js
+
+
+---memo---
+card.ping(w:348px, h:534px)
+
+
+
+---未---
+セレクトしたカードを強調
+
+Tableのカードを裏表示
+
+Selectで提出後裏カードを表示
+
+---完---
+
+
+
+-------
+🛈⍇⊟⚙

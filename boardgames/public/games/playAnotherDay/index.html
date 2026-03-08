@@ -1,0 +1,58 @@
+<html>
+  <header>
+    <meta charset="utf-8" />
+    <title>playAnotherDay</title>
+    <link rel="stylesheet" href="style.css" />
+  </header>
+  <body>
+    <div id="wrapper">
+      <div id="top_menu">
+        <button id="open_exit">⍇</button>
+        <button id="submit" data-i18n="ui.submit"></button>
+        <div id="right_group">
+          <button id="open_score">⊟</button>
+          <button id="open_setting">⚙</button>
+        </div>
+      </div>
+      <div id="game_area">
+        <div id="table">
+          <div class="player_field p1"></div>
+          <div class="player_field p2"></div>
+          <div class="player_field p3"></div>
+          <div class="player_field p4"></div>
+          <div class="player_field p5"></div>
+
+          <div class="center_field"></div>
+        </div>
+        <div id="bottom_blank"></div>
+      </div>
+
+      <div id="hands_user"></div>
+
+      <div id="overlay" class="hidden">
+        <div class="modal hidden" id="score_modal">
+          <div id="score_board"></div>
+        </div>
+        <div class="modal hidden" id="targeter_modal">
+          <div id="targeter"></div>
+        </div>
+        <div class="modal hidden" id="exit_modal">
+          <span id="exit_notes" data-i18n="ui.exit_notes"></span>
+          <div id="button_group">
+            <button id="exit" data-i18n="ui.exit"></button>
+            <button id="close_exit" data-i18n="ui.back"></button>
+          </div>
+        </div>
+        <div class="modal hidden" id="setting_modal">
+          <div id="setting"></div>
+          <div id="rule_container">
+            <h1 data-i18n="rule."></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="./playAnotherDay.js"></script>
+  </body>
+</html>
