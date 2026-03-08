@@ -56,31 +56,37 @@ function change_modal(type) {
 
   document.getElementById(`${type}_modal`).classList.remove("hidden");
 }
-function add_player_list(name) {
-  if (name in player_list) return;
+function update_player_list(room) {
+  tbody.innerHTML = "";
+  room.players.forEach((p) => {
+    const name = p.name;
+    const id = p.id;
 
-  player_list.push(name);
+    player_list.push(name);
 
-  const list = document.getElementById("player_list");
-  const tbody = list.querySelector("tbody");
-  const tr = document.createElement("tr");
-  tr.dataset.name = name;
-  {
-    const td = document.createElement("td");
-    td.innerText = name;
-    tr.appendChild(td);
-  }
-  tbody.appendChild(tr);
+    const list = document.getElementById("player_list");
+    const tbody = list.querySelector("tbody");
+    const tr = document.createElement("tr");
+    tr.dataset.id = id;
+    {
+      const td = document.createElement("td");
+      td.innerText = name;
+      tr.appendChild(td);
+    }
+    {
+      const td = document.createElement("td");
+      td.innerText = p.ready ? t("ui.ready") : t("ui.not_ready");
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  });
 }
-function remove_player_list(name) {
-  if (!(name in player_list)) return;
-
-  player_list.filter((p) => p != name);
-
-  const list = document.getElementById("player_list");
-  const tbody = list.querySelector("tbody");
-  const tr = tbody.querySelectorAll("tr").find((el) => el.dataset.name == name);
-  if (tr) tr.remove();
+function display_room_code(room_code) {
+  const room_code_container = document.getElementById("room_code_container");
+  room_code_container.innerHTML = "";
+  const p = document.createElement("p");
+  p.innerText = room_code;
+  room_code_container.appendChild(p);
 }
 
 //--creat_room--
@@ -88,28 +94,14 @@ const create_room = document.getElementById("create_room");
 create_room.onclick = () => {
   socket.emit("create_room", game_type, user_name);
 };
-socket.on("room_created", ({ room_code, game_type, socket_id }) => {
-  localStorage.setItem("player_id", socket_id);
-  localStorage.setItem("room_code", room_code);
-
-  const room_code_container = document.getElementById("room_code_container");
-  room_code_container.innerHTML = "";
-  const p = document.createElement("p");
-  p.innerText = room_code;
-  room_code_container.appendChild(p);
-
-  add_player_list(user_name);
-  change_modal("room_wait");
-
-  console.log("successfully created");
-  console.log("部屋:", room_code);
-  console.log("game:", game_type);
-});
 
 const join_room = document.getElementById("join_room");
 join_room.onclick = () => {
   const room_code = document.getElementById("room_code").value.trim();
   socket.emit("join_room", room_code, user_name);
+
+  overlay.classList.add("hidden");
+  overlay.onclick = null;
 };
 
 const ready = document.getElementById("ready");
@@ -125,30 +117,111 @@ exit_room.onclick = () => {
   socket.emit("exit_room");
 };
 
-socket.on("room_joined", ({ room_code, game_type, socket_id }) => {
-  localStorage.setItem("player_id", socket_id);
-  localStorage.setItem("room_code", room_code);
+socket.on("success", ({ room, type }) => {
+  if (type == null) return;
 
-  console.log("successfully joined");
-  console.log("部屋:", room_code);
-  console.log("game:", game_type);
+  switch (type) {
+    case "room_created":
+      on_room_created(room);
+      break;
+    case "joined_room":
+      on_joined_room(room);
+      break;
+    case "player_ready":
+      on_user_ready(room);
+      break;
+    case "id_updated":
+      on_id_updated(room);
+      break;
+  }
+});
+
+function on_room_created(room) {
+  localStorage.setItem("player_id", socket.id);
+  localStorage.setItem("room_code", room.status.room_code);
+
+  display_room_code(room.status.room_code);
+
+  update_player_list(room);
+  change_modal("room_wait");
+}
+
+function on_joined_room(room) {
+  localStorage.setItem("player_id", socket.id);
+  localStorage.setItem("room_code", room.status.room_code);
+
+  display_room_code(room.status.room_code);
+
+  update_player_list(room);
+  change_modal("room_wait");
+}
+
+function on_user_ready(room) {}
+
+socket.on("unsuccess", ({ room, type }) => {
+  if (type == null) return;
+
+  switch (type) {
+    case "old_room_exist":
+      on_old_room_exist(room);
+      break;
+    case "game_not_found":
+      on_game_not_found();
+      break;
+    case "room_in_game":
+      on_room_in_game(room);
+      break;
+    case "room_not_found":
+      on_room_not_found();
+      break;
+    case "player_not_found":
+      on_player_not_found(room);
+      break;
+  }
 });
 
 socket.on("room_not_joined", () => {
   console.log("unsuccess_join");
 });
 
-socket.on("room_ready", (url) => {
-  window.location.href = url;
+socket.on("status_updated", ({ room, type }) => {
+  if (type == null) return;
+
+  switch (type) {
+    case "player_joined":
+      on_player_joined(room);
+      break;
+    case "player_ready":
+      on_player_ready(room);
+      break;
+    case "room_ready":
+      on_room_ready(room);
+      break;
+    case "player_exit":
+      on_player_exit(room);
+      break;
+  }
 });
+
+function on_player_joined(room) {
+  update_player_list(room);
+}
+
+function on_player_ready(room) {
+  update_player_list(room);
+}
+
+function on_room_ready(room) {
+  window.location.href = room.game_info.link;
+}
+
+function on_player_exit(room) {
+  update_player_list(room);
+}
 
 socket.on("exit_room", () => {
   socket.disconnect();
   window.location.href = "./../hub.html";
-});
-
-socket.on("player_exit", (room) => {
-  console.log("player_exit");
 });
 
 function set_language() {

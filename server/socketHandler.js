@@ -26,7 +26,7 @@ module.exports = (io) => {
           socket.id,
         );
         socket.emit("unsuccess", {
-          status: old_room,
+          room: old_room,
           type: "old_room_exist",
         });
         return;
@@ -45,7 +45,7 @@ module.exports = (io) => {
       if (game == null) {
         console.log("SH: game_not_found:", game_type);
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "game_not_found",
         });
         return;
@@ -83,7 +83,7 @@ module.exports = (io) => {
       });
 
       socket.emit("success", {
-        status: rooms[room_code],
+        room: rooms[room_code],
         type: "room_created",
       });
     });
@@ -99,7 +99,7 @@ module.exports = (io) => {
           socket.id,
         );
         socket.emit("unsuccess", {
-          status: old_room,
+          room: old_room,
           type: "old_room_exist",
         });
         return;
@@ -109,7 +109,7 @@ module.exports = (io) => {
         if (rooms[room_code].is_in_game) {
           console.log("SH: room_is_in_game: ", room_code);
           socket.emit("unsuccess", {
-            status: rooms[room_code],
+            room: rooms[room_code],
             type: "room_in_game",
           });
           return;
@@ -131,17 +131,17 @@ module.exports = (io) => {
         });
 
         socket.emit("success", {
-          status: rooms[room_code],
+          room: rooms[room_code],
           type: "joined_room",
         });
 
         io.to(room_code).emit("status_updated", {
-          status: rooms[room_code],
+          room: rooms[room_code],
           type: "player_joined",
         });
       } else {
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
       }
@@ -159,7 +159,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_exist:", room_code);
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -170,7 +170,7 @@ module.exports = (io) => {
       if (!player) {
         console.log("SH: player_not_found:", socket.id);
         socket.emit("unsuccess", {
-          status: room,
+          room: room,
           type: "player_not_found",
         });
         return;
@@ -179,12 +179,12 @@ module.exports = (io) => {
       player.ready = true;
 
       socket.emit("success", {
-        status: room,
+        room: room,
         type: "player_ready",
       });
 
       io.to(room_code).emit("status_updated", {
-        status: room,
+        room: room,
         type: "player_ready",
       });
 
@@ -220,7 +220,7 @@ module.exports = (io) => {
       room.is_transition_progress = true;
       //gameのInit
       io.to(room_code).emit("status_updated", {
-        status: room,
+        room: room,
         type: "room_ready",
         link: room.game_info.link,
       });
@@ -232,7 +232,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_found: ", room_code);
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -240,7 +240,7 @@ module.exports = (io) => {
       if (room.is_in_game) {
         console.log("SH: room_in_game: ", room_code);
         socket.emit("unsuccess", {
-          status: room,
+          room: room,
           type: "room_in_game",
         });
         return;
@@ -251,7 +251,7 @@ module.exports = (io) => {
       if (!player) {
         console.log("SH: player_not_found:", socket.id);
         socket.emit("unsuccess", {
-          status: room,
+          room: room,
           type: "player_not_found",
         });
         return;
@@ -260,12 +260,12 @@ module.exports = (io) => {
       player.ready = true;
 
       socket.emit("success", {
-        status: room,
+        room: room,
         type: "player_ready",
       });
 
       io.to(room_code).emit("status_updated", {
-        status: room,
+        room: room,
         type: "player_ready",
       });
 
@@ -297,7 +297,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_found: ", room_code);
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -327,11 +327,14 @@ module.exports = (io) => {
       room.status = new_status;
 
       socket.emit("success", {
-        status: room.status,
+        room: room.status,
         type: "submittion_applied",
       });
 
-      io.to(room_code).emit("status_updated", room.status);
+      io.to(room_code).emit("status_updated", {
+        status: room.status,
+        type: "player_moved",
+      });
     });
 
     socket.on("exit_game", (data) => {
@@ -346,7 +349,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_found: ", room_code);
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -372,7 +375,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_found: ");
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -391,7 +394,7 @@ module.exports = (io) => {
       if (!player) {
         console.log("SH: player_not_found: ", socket.id);
         socket.emit("unsuccess", {
-          status: room,
+          room: room,
           type: "player_not_found",
         });
         return;
@@ -421,7 +424,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_found: ", room_code);
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -430,7 +433,7 @@ module.exports = (io) => {
       if (!player) {
         console.log("SH: player_not_found: ", old_id);
         socket.emit("unsuccess", {
-          status: room,
+          room: room,
           type: "player_not_found",
         });
         return;
@@ -449,12 +452,15 @@ module.exports = (io) => {
 
       socket.join(room_code);
       socket.emit("success", {
-        status: room.status,
+        room: room,
         type: "id_updated",
       });
 
       if (room.is_in_game) {
-        io.to(room_code).emit("status_updated", room.status);
+        io.to(room_code).emit("status_updated", {
+          status: room.status,
+          type: "player_reconnected",
+        });
       }
 
       console.log("SH: update_id", old_id, " => ", socket.id);
@@ -465,7 +471,7 @@ module.exports = (io) => {
       if (!room) {
         console.log("SH: room_not_found: ");
         socket.emit("unsuccess", {
-          status: null,
+          room: null,
           type: "room_not_found",
         });
         return;
@@ -497,7 +503,10 @@ module.exports = (io) => {
         p.ready = false;
       });
 
-      io.to(room_code).emit("status_updated", room);
+      io.to(room_code).emit("status_updated", {
+        room: room,
+        type: "player_exit",
+      });
 
       console.log(io.sockets.adapter.rooms);
     }
