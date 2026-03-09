@@ -1,24 +1,13 @@
 import { render, enable_submit, success_submit, set_exit } from "./render.js";
 
+//===reconnect===
 const old_id = localStorage.getItem("player_id");
 const room_code = localStorage.getItem("room_code");
 const socket = io({ query: { old_id, room_code } });
 
 socket.emit("complete_reconnection", room_code);
 
-let user_input = "";
-
-socket.on("update_id", (socket_id) => {
-  localStorage.setItem("player_id", socket_id);
-
-  console.log("id: ", socket_id);
-});
-
-function handle_submittion(data) {
-  user_input = data.input;
-  on_submit(data.room_code);
-}
-
+//--init--
 socket.on("init", (status) => {
   const my_status = status.players.find((p) => p.id == socket.id);
 
@@ -31,6 +20,70 @@ socket.on("init", (status) => {
 
 function exit_game(status) {
   socket.emit("exit_game", { room_code: status.room_code });
+}
+
+//===connect to SH===
+socket.on("success", ({ status, type }) => {
+  if (type == null) return;
+
+  switch (type) {
+    case "submittion_applied":
+      on_submittion_applied(status);
+      break;
+    case "id_updated":
+      on_id_updated(status);
+      break;
+    case "player_ready":
+      on_player_ready(status);
+  }
+});
+
+function on_id_updated(status) {
+  localStorage.setItem("player_id", socket.id);
+
+  console.log("id: ", socket.id);
+}
+
+socket.on("unsuccess", ({ room, status, type, reason, move }) => {
+  if (type == null) return;
+
+  switch (type) {
+    case "game_not_found":
+      on_game_not_found();
+      break;
+    case "room_in_game":
+      on_room_in_game(room);
+      break;
+    case "room_not_found":
+      on_room_not_found();
+      break;
+    case "player_not_found":
+      on_player_not_found(room);
+      break;
+    case "submittion_not_applied":
+      on_submittion_not_applied({ status: status, reason: reason, move: move });
+      break;
+  }
+});
+
+socket.on("status_updated", ({ status, type }) => {
+  if (type == null) return;
+
+  switch (type) {
+    case "player_reconnected":
+      on_player_reconnected(status);
+      break;
+    case "player_moved":
+      on_player_moved(status);
+      break;
+  }
+});
+
+let user_input = "";
+
+function handle_submittion(data) {
+  user_input = data.input;
+  on_submit(data.room_code);
 }
 
 socket.on("update_state", async (status) => {

@@ -313,6 +313,7 @@ module.exports = (io) => {
           status: room.status,
           move: move,
           reason: reason,
+          type: "submittion_not_applied",
         });
         return;
       }
