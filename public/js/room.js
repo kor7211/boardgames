@@ -81,6 +81,7 @@ function update_player_list(room) {
     tbody.appendChild(tr);
   });
 }
+
 function display_room_code(room_code) {
   const room_code_container = document.getElementById("room_code_container");
   room_code_container.innerHTML = "";
@@ -178,10 +179,6 @@ socket.on("unsuccess", ({ room, type }) => {
       on_player_not_found(room);
       break;
   }
-});
-
-socket.on("room_not_joined", () => {
-  console.log("unsuccess_join");
 });
 
 socket.on("status_updated", ({ room, type }) => {

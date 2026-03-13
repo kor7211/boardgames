@@ -1,3 +1,5 @@
+import { t } from "../i18n/i18n.js";
+
 const buttons = document.querySelectorAll(".game_select");
 let user_name = localStorage.getItem("user_name");
 if (user_name) document.getElementById("user_name").value = user_name;
@@ -21,7 +23,6 @@ function on_game_selected(game_type) {
   localStorage.setItem("game_type", game_type);
   localStorage.setItem("user_name", user_name);
   window.location.href = "/room.html";
-  //usernameも作る
 }
 
 function generate_randam_num() {
@@ -29,4 +30,11 @@ function generate_randam_num() {
     .toString()
     .padStart(3, "0");
   return num;
+}
+
+function set_language() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
 }
