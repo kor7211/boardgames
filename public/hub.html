@@ -1,44 +1,31 @@
 <html>
-  <header>
+  <head>
     <title>hub</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/style.css" />
-  </header>
+    <link rel="stylesheet" href="css/menu.css" />
+  </head>
   <body>
     <div id="wrapper">
       <div id="top_menu">
         <button id="open_setting">⚙</button>
       </div>
       <div id="center_menu">
-        <div class="room_modal" id="room_manager_modal">
-          <button id="create_room" data-i18n="ui.create"></button>
-          <button id="open_join" data-i18n="ui.join"></button>
-        </div>
-        <div class="room_modal hidden" id="room_wait_modal">
-          <div id="player_list">
-            <table>
-              <tbody></tbody>
-            </table>
+        <div id="left_contents">
+          <div id="game_select_container">
+            <button class="game_select" data-game="game1">game1</button>
+            <button class="game_select" data-game="gaem2">game2</button>
           </div>
-          <span id="player_num"></span>
+          <div id="user_name_container">
+            <input id="user_name" />
+          </div>
         </div>
+        <div id="rule_container"></div>
       </div>
       <div id="bottom_menu">
         <button id="ready" data-i18n="ui.ready"></button>
       </div>
 
       <div id="overlay" class="hidden">
-        <div class="modal hidden" id="join_modal">
-          <input type="text" inputmode="numeric" id="room_code" />
-          <button id="join_room" data-i18n="ui.join"></button>
-        </div>
-        <div class="modal hidden" id="exit_modal">
-          <span id="exit_notes" data-i18n="ui.exit_notes"></span>
-          <div id="button_group">
-            <button id="exit_room" data-i18n="ui.exit"></button>
-            <button id="close_exit" data-i18n="ui.back"></button>
-          </div>
-        </div>
         <div class="modal hidden" id="setting_modal">
           <div id="setting"></div>
           <div id="rule_container">
@@ -47,10 +34,6 @@
         </div>
       </div>
     </div>
-
-    <button class="game_select" data-game="game1">game1</button>
-    <button class="game_select" data-game="gaem2">game2</button>
-    <input id="user_name" />
 
     <script src="././js/hub.js"></script>
   </body>

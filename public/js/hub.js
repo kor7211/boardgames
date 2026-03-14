@@ -1,8 +1,18 @@
 import { t } from "../i18n/i18n.js";
+set_language();
+
+let game = "";
 
 const buttons = document.querySelectorAll(".game_select");
 let user_name = localStorage.getItem("user_name");
-if (user_name) document.getElementById("user_name").value = user_name;
+const name_input = document.getElementById("user_name");
+if (user_name) name_input.value.trim() = user_name;
+user_name.addEventListener("change", () => {
+  if(name_input.value.trim() == "") {
+    name_input.value = t("no-name") + generate_randam_num();
+  }
+  user_name = name_input;
+})
 
 localStorage.removeItem("player_id");
 localStorage.removeItem("game_type");
@@ -10,17 +20,24 @@ localStorage.removeItem("room_code");
 
 buttons.forEach((button) => {
   button.addEventListener("click", (event) => {
-    on_game_selected(event.currentTarget.dataset.game); // dataset のキー名を指定
+    buttons.forEach(el => el.classList.remove("selected"));
+    button.classList.add("selected");
+    game = event.currentTarget.dataset.game;
+
+    render_rule(game);
   });
 });
 
-function on_game_selected(game_type) {
-  user_name = document.getElementById("user_name").value.trim();
-  if (!user_name) {
-    user_name = "no-name" + generate_randam_num();
+function render_rule() {
+  const rule = t(`rule.${game}`);
+}
+
+function on_ready() {
+  if(user_name == "") {
+    user_name = t("no-name") + generate_randam_num();
   }
 
-  localStorage.setItem("game_type", game_type);
+  localStorage.setItem("game_type", game);
   localStorage.setItem("user_name", user_name);
   window.location.href = "/room.html";
 }
