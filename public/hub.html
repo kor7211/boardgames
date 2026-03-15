@@ -2,38 +2,45 @@
   <head>
     <title>hub</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/menu.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/hub.css" />
   </head>
   <body>
-    <div id="wrapper">
-      <div id="top_menu">
-        <button id="open_setting">⚙</button>
+    <div class="wrapper">
+      <div class="top-menu">
+        <div class="right-group">
+          <button class="button-letter" id="open_setting">⚙</button>
+        </div>
       </div>
-      <div id="center_menu">
-        <div id="left_contents">
-          <div id="game_select_container">
-            <div class="game_select" data-game="game1">
-              <p data-i18n="ui.game1"></p>
+      <div class="center-menu">
+        <div id="contents_container">
+          <div id="contents_1">
+            <div id="game_select_container">
+              <div class="game-select" data-game="game1">
+                <p data-i18n="ui.game1"></p>
+              </div>
+              <button class="game-select" data-game="gaem2">game2</button>
             </div>
-            <button class="game_select" data-game="gaem2">game2</button>
+            <div id="user_name_container">
+              <input id="user_name" />
+            </div>
           </div>
-          <div id="user_name_container">
-            <input id="user_name" />
+          <div id="contents_2">
+            <div id="rule_container" class="rule-container"></div>
           </div>
         </div>
-        <div id="rule_container"></div>
       </div>
-      <div id="bottom_menu">
-        <button id="ready" data-i18n="ui.submit"></button>
+      <div class="bottom-menu">
+        <button class="button-l" id="ready" data-i18n="ui.submit"></button>
       </div>
 
-      <div id="overlay" class="hidden">
+      <div id="overlay" class="overlay hidden">
         <div class="modal" id="setting_modal">
-          <div id="setting"></div>
+          <div id="setting_container"></div>
         </div>
       </div>
     </div>
 
-    <script src="././js/hub.js"></script>
+    <script type="module" src="././js/hub.js"></script>
   </body>
 </html>

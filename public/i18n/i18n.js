@@ -1,5 +1,5 @@
-import ja from "./ja.json" assert { type: "json" };
-import en from "./en.json" assert { type: "json" };
+import ja from "./ja.json" with { type: "json" };
+import en from "./en.json" with { type: "json" };
 
 const translations = { ja, en };
 
