@@ -12,7 +12,9 @@
       <div id="center_menu">
         <div id="left_contents">
           <div id="game_select_container">
-            <button class="game_select" data-game="game1">game1</button>
+            <div class="game_select" data-game="game1">
+              <p data-i18n="ui.game1"></p>
+            </div>
             <button class="game_select" data-game="gaem2">game2</button>
           </div>
           <div id="user_name_container">
@@ -22,15 +24,12 @@
         <div id="rule_container"></div>
       </div>
       <div id="bottom_menu">
-        <button id="ready" data-i18n="ui.ready"></button>
+        <button id="ready" data-i18n="ui.submit"></button>
       </div>
 
       <div id="overlay" class="hidden">
-        <div class="modal hidden" id="setting_modal">
+        <div class="modal" id="setting_modal">
           <div id="setting"></div>
-          <div id="rule_container">
-            <h1 data-i18n="rule."></h1>
-          </div>
         </div>
       </div>
     </div>

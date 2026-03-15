@@ -1,9 +1,17 @@
 import { t } from "../i18n/i18n.js";
-set_language();
+import { Common } from "./common.js";
+
+const common = new Common();
 
 let game = "";
 
-const buttons = document.querySelectorAll(".game_select");
+localStorage.removeItem("player_id");
+localStorage.removeItem("game_type");
+localStorage.removeItem("room_code");
+
+const ready = document.getElementById("ready");
+ready.addEventListener("click", on_ready);
+
 let user_name = localStorage.getItem("user_name");
 const name_input = document.getElementById("user_name");
 if (user_name) name_input.value.trim() = user_name;
@@ -14,29 +22,29 @@ user_name.addEventListener("change", () => {
   user_name = name_input;
 })
 
-localStorage.removeItem("player_id");
-localStorage.removeItem("game_type");
-localStorage.removeItem("room_code");
 
-buttons.forEach((button) => {
-  button.addEventListener("click", (event) => {
-    buttons.forEach(el => el.classList.remove("selected"));
-    button.classList.add("selected");
+const selects = document.querySelectorAll(".game_select");
+selects.forEach((select) => {
+  const div = document.createElement("div");
+  div.style.backgroundImage = `url(../images/${select.dataset.game}/icon)`;
+  select.appendChild(div);
+  select.addEventListener("click", (event) => {
+    selects.forEach(el => el.classList.remove("selected"));
+    select.classList.add("selected");
     game = event.currentTarget.dataset.game;
 
-    render_rule(game);
+    ready.classList.add("selected");
+    const rule = t(`rule.${game}`);
+    common.render_rule(rule);
   });
 });
 
-function render_rule() {
-  const rule = t(`rule.${game}`);
-}
-
 function on_ready() {
+  if(!game) return
+
   if(user_name == "") {
     user_name = t("no-name") + generate_randam_num();
   }
-
   localStorage.setItem("game_type", game);
   localStorage.setItem("user_name", user_name);
   window.location.href = "/room.html";
@@ -47,11 +55,4 @@ function generate_randam_num() {
     .toString()
     .padStart(3, "0");
   return num;
-}
-
-function set_language() {
-  document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.dataset.i18n;
-    el.textContent = t(key);
-  });
 }
