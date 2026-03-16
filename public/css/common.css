@@ -15,6 +15,9 @@
   --black: rgb(0, 0, 0);
 }
 
+p {
+  margin: 0;
+}
 /* === status === */
 
 .hidden {
@@ -39,17 +42,24 @@ body {
   height: 40px;
   align-items: center;
   position: relative;
-  background-color: var(--main-color);
+  background-color: var(--main-color-shade);
 }
 .center-menu {
-  height: 40px;
   align-items: center;
   position: relative;
+
+  background:
+    linear-gradient(135deg, var(--main-color-shade) 10%, transparent 0%) -20px 0,
+    linear-gradient(225deg, var(--main-color-shade) 10%, transparent 0%) -20px 0,
+    linear-gradient(315deg, var(--main-color-shade) 10%, transparent 0%) -20px 0,
+    linear-gradient(45deg, var(--main-color-shade) 10%, transparent 0%) -20px 0;
+  background-size: 20px 20px;
   background-color: var(--main-color);
 }
 .bottom-menu {
   display: flex;
-  height: 40px;
+  margin-top: auto;
+  height: 60px;
   align-items: center;
   position: relative;
   background-color: var(--accent-color);
@@ -72,7 +82,7 @@ body {
   padding: 20px;
   border-radius: 3px;
   min-width: 300px;
-  border: 5px solid var(--accent-color);
+  border: 5px solid var(--main-color-shade);
   border-radius: 12px;
 }
 

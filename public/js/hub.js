@@ -17,7 +17,7 @@ const name_input = document.getElementById("user_name");
 if (user_name) name_input.value = user_name;
 name_input.addEventListener("change", () => {
   if (name_input.value.trim() == "") {
-    name_input.value = t("no-name") + generate_randam_num();
+    name_input.placeholder = t("no-name") + generate_randam_num();
   }
   user_name = name_input;
 });
@@ -42,7 +42,7 @@ function on_ready() {
   if (!game) return;
 
   if (user_name == "") {
-    user_name = t("no-name") + generate_randam_num();
+    user_name = name_input.placeholder;
   }
   localStorage.setItem("game_type", game);
   localStorage.setItem("user_name", user_name);

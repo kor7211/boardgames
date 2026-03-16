@@ -8,24 +8,24 @@
   <body>
     <div class="wrapper">
       <div class="top-menu">
+        <div id="user_name_container">
+          <input id="user_name" type="text" maxlength="10" />
+        </div>
         <div class="right-group">
           <button class="button-letter" id="open_setting">⚙</button>
         </div>
       </div>
       <div class="center-menu">
         <div id="contents_container">
-          <div id="contents_1">
+          <div id="contents_1" class="content">
             <div id="game_select_container">
               <div class="game-select" data-game="game1">
                 <p data-i18n="ui.game1"></p>
               </div>
               <button class="game-select" data-game="gaem2">game2</button>
             </div>
-            <div id="user_name_container">
-              <input id="user_name" />
-            </div>
           </div>
-          <div id="contents_2">
+          <div id="contents_2" class="content">
             <div id="rule_container" class="rule-container"></div>
           </div>
         </div>
