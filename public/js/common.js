@@ -13,7 +13,9 @@ export class Common {
     }
 
     const lang = localStorage.getItem("lang");
-    if (lang) set_lang(lang);
+    if (lang) {
+      set_lang(lang);
+    }
 
     this.set_language();
     this.open_setting = document.getElementById("open_setting");
@@ -65,12 +67,14 @@ export class Common {
         const option = document.createElement("option");
         option.value = "en";
         option.innerText = "English";
+        if (localStorage.getItem("lang") == "en") option.selected = true;
         select.appendChild(option);
       }
       {
         const option = document.createElement("option");
         option.value = "ja";
         option.innerText = "日本語";
+        if (localStorage.getItem("lang") == "ja") option.selected = true;
         select.appendChild(option);
       }
       select.addEventListener("change", (event) => {

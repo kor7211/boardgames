@@ -1,4 +1,7 @@
 import { t } from "../i18n/i18n.js";
+import { Common } from "./common.js";
+
+const common = new Common();
 
 const game_type = localStorage.getItem("game_type");
 const user_name = localStorage.getItem("user_name");
@@ -9,25 +12,13 @@ const socket = io();
 let player_list = [];
 
 //===onclick===
-//--open modal--
-const overlay = document.getElementById("overlay");
-function display_modal(type) {
-  overlay.classList.remove("hidden");
-
-  document.querySelectorAll(`.modal`).forEach((m) => {
-    m.classList.add("hidden");
-  });
-
-  document.getElementById(`${type}_modal`).classList.remove("hidden");
-}
-
 const open_exit = document.getElementById("open_exit");
 const close_exit = document.getElementById("close_exit");
 open_exit.onclick = () => {
-  display_modal("exit");
+  common.display_modal("exit", false);
 };
 close_exit.onclick = () => {
-  overlay.classList.add("hidden");
+  document.getElementById("overlay").classList.add("hidden");
 };
 
 const open_join = document.getElementById("open_join");
