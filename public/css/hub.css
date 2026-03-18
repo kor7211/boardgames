@@ -15,12 +15,15 @@
   width: 150px;
   padding: 3px 7px;
   border-radius: 5px;
-  border: 2px solid var(--accent-color);
+  border: 2px solid var(--gray-3);
+  background-color: var(--white);
 }
 
 #user_name:focus {
   outline: 0;
   border: 2px solid var(--setting-color);
+  background-color: var(--white);
+  transition: 0.15s;
 }
 
 .content {

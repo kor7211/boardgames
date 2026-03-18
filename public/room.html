@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="wrapper">
-      <div class="top_menu">
+      <div class="top-menu">
         <button id="open_exit" class="button-letter">⍇</button>
         <div id="room_code_container"></div>
         <div class="right-group">
@@ -15,29 +15,33 @@
         </div>
       </div>
 
-      <div class="center_menu">
-        <div class="room_modal" id="room_manager_modal">
+      <div class="center-menu">
+        <div class="room-modal" id="room_manager_modal">
           <button id="create_room" data-i18n="ui.create"></button>
           <button id="open_join" data-i18n="ui.join"></button>
         </div>
-        <div class="room_modal hidden" id="room_wait_modal">
-          <div id="player_list">
-            <table>
-              <tbody></tbody>
-            </table>
-          </div>
+        <div class="room-modal hidden" id="room_wait_modal">
+          <div id="player_list"></div>
           <span id="player_num"></span>
         </div>
       </div>
 
-      <div class="bottom_menu">
-        <button class="button-l" id="ready" data-i18n="ui.ready"></button>
+      <div class="bottom-menu">
+        <button
+          class="button-l hidden"
+          id="ready"
+          data-i18n="ui.ready"
+        ></button>
       </div>
 
-      <div class="overlay" id="overlay" class="hidden">
+      <div class="overlay hidden" id="overlay">
         <div class="modal hidden" id="join_modal">
           <input type="text" inputmode="numeric" id="room_code" />
           <button id="join_room" data-i18n="ui.join"></button>
+        </div>
+        <div class="modal hidden" id="message_modal">
+          <p id="message"></p>
+          <button class="hidden" id="message_button" data-i18n="back"></button>
         </div>
         <div class="modal hidden" id="exit_modal">
           <span id="exit_notes" data-i18n="ui.exit_notes"></span>
@@ -46,10 +50,10 @@
             <button id="close_exit" data-i18n="ui.back"></button>
           </div>
         </div>
-        <div class="modal hidden" id="setting_modal">
-          <div id="setting"></div>
-          <div id="rule">
-            <div class="rule-container" id="rule_container"></div>
+        <div class="modal" id="setting_modal">
+          <div class="setting-container" id="setting_container"></div>
+          <div id="rule_cover">
+            <div id="rule_container" class="rule-container"></div>
           </div>
         </div>
       </div>

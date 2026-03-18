@@ -2,12 +2,15 @@
 :root {
   --main-color: hsl(0, 100%, 95%);
   --accent-color: hsl(341, 69%, 50%);
+  --sub-color: hsl(41, 100%, 60%);
   --main-color-shade: hsl(0, 100%, 80%);
   --accent-color-shade: hsl(341, 69%, 35%);
+  --sub-color-shade: hsl(41, 100%, 45%);
 
   --setting-color: hsl(208, 85%, 57%);
 
   --white: rgb(255, 255, 255);
+  --gray-0: rgb(235, 235, 235);
   --gray-1: rgb(204, 204, 204);
   --gray-2: rgb(153, 153, 153);
   --gray-3: rgb(102, 102, 102);
@@ -33,6 +36,9 @@ body {
 }
 
 .wrapper {
+  display: flex;
+  flex-direction: column;
+
   height: 100dvh;
   margin: 0 auto;
 }
@@ -42,11 +48,12 @@ body {
   height: 40px;
   align-items: center;
   position: relative;
-  background-color: var(--main-color-shade);
+  background-color: var(--sub-color);
 }
 .center-menu {
   align-items: center;
   position: relative;
+  flex: 1;
 
   background:
     linear-gradient(135deg, var(--main-color-shade) 10%, transparent 0%) -20px 0,
@@ -79,10 +86,16 @@ body {
 }
 
 .modal {
+  max-height: 80dvh;
+
+  display: flex;
+  flex-direction: column;
+
   background: var(--main-color);
   padding: 20px;
   border-radius: 3px;
   min-width: 300px;
+  max-width: 90dvw;
   border: 5px solid var(--main-color-shade);
   border-radius: 12px;
 }
@@ -93,10 +106,21 @@ body {
   align-items: center;
 }
 
+.setting-container {
+  padding: 5px;
+
+  background-color: var(--white);
+  border: 3px solid var(--gray-3);
+  border-radius: 3px;
+}
+
 .rule-container {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: var(--white);
+  border: 3px solid var(--gray-3);
+  border-radius: 3px;
 }
 /* === button === */
 
@@ -104,7 +128,7 @@ body {
   color: var(--accent-color);
   background-color: var(--main-color);
   border: 0px;
-  border-bottom: 5px solid var(--accent-color);
+  border-bottom: 5px solid var(--sub-color);
   border-radius: 12px;
   font-size: 20px;
   padding: 6px 28px;
@@ -120,7 +144,7 @@ body {
   margin-top: 3px;
   color: var(--accent-color-shade);
   background: var(--main-color-shade);
-  border-bottom: 2px solid var(--accent-color-shade);
+  border-bottom: 2px solid var(--sub-color-shade);
   transition: 0.15s;
 }
 

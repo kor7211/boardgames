@@ -4,6 +4,8 @@
     "submit": "決定",
     "close": "閉じる",
     "back": "戻る",
+    "join": "参加",
+    "create": "作成",
     "open_score": "スコアを見る",
     "user_name": "名前",
     "point": "得点",
@@ -12,7 +14,15 @@
     "not_ready": "準備中",
     "exit": "退出",
     "exit_notes": "本当にゲームから退出しますか？",
+    "room_code": "部屋番号",
     "game1": "プレイアナザーデイ"
+  },
+  "error": {
+    "game_not_found": "不明なゲームです",
+    "room_not_found": "部屋が見つかりませんでした",
+    "room_in_game": "部屋はゲーム中です",
+    "old_game_exist": "すでに部屋に参加しています",
+    "player_not_found": "不明なidを検出しました"
   },
   "rule": {
     "game1": [
