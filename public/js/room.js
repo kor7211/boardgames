@@ -42,32 +42,48 @@ function change_modal(type) {
   document.getElementById(`${type}_modal`).classList.remove("hidden");
 }
 function update_player_list(room) {
+  console.log(room);
+  const list = document.getElementById("player_list");
+  list.innerHTML = "";
+  const table = document.createElement("table");
+  const tbody = document.createElement("tbody");
+  player_list = [];
+
+  let ready_num = 0;
   room.players.forEach((p) => {
     const name = p.name;
     const id = p.id;
 
     player_list.push(name);
 
-    const list = document.getElementById("player_list");
-    list.innerHTML = "";
-    const table = document.createElement("table");
-    const tbody = document.createElement("tbody");
     const tr = document.createElement("tr");
     tr.dataset.id = id;
     {
       const td = document.createElement("td");
       td.innerText = name;
+      td.classList.add("td--name");
       tr.appendChild(td);
     }
     {
       const td = document.createElement("td");
-      td.innerText = p.ready ? t("ui.ready") : t("ui.not_ready");
+      td.classList.add("td--ready");
+      if (p.ready) {
+        td.innerText = t("ui.ready");
+        ready_num += 1;
+      } else {
+        td.innerText = t("ui.not_ready");
+      }
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
     table.appendChild(tbody);
     list.appendChild(table);
   });
+
+  const player_num = document.createElement("p");
+  player_num.id = "player_num";
+  player_num.innerText = `${ready_num} / ${player_list.length}`;
+  list.appendChild(player_num);
 }
 
 function display_room_code(room_code) {
@@ -176,6 +192,9 @@ socket.on("unsuccess", ({ room, type }) => {
     case "room_not_found":
       on_room_not_found();
       break;
+    case "code_not_found":
+      on_code_not_found();
+      break;
     case "player_not_found":
       on_player_not_found(room);
       break;
@@ -201,7 +220,7 @@ function on_game_not_found() {
   button.classList.remove("hidden");
   button.onclick = () => {
     button.classList.add("hidden");
-    socket.emit("exit_room");
+    back_hub();
   };
   common.display_modal("message", false);
 }
@@ -213,6 +232,18 @@ function on_room_in_game(room) {
 }
 
 function on_room_not_found() {
+  const message = document.getElementById("message");
+  message.innerText = t("error.room_not_found");
+  const button = document.getElementById("message_button");
+  button.classList.remove("hidden");
+  button.onclick = () => {
+    button.classList.add("hidden");
+    back_hub();
+  };
+  common.display_modal("message", false);
+}
+
+function on_code_not_found() {
   const message = document.getElementById("message");
   message.innerText = t("error.room_not_found");
   common.display_modal("message");
@@ -266,6 +297,10 @@ function on_player_exit(room) {
 }
 
 socket.on("exit_room", () => {
+  back_hub();
+});
+
+function back_hub() {
   socket.disconnect();
   window.location.href = "./../hub.html";
-});
+}

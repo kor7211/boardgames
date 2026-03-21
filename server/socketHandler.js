@@ -142,7 +142,7 @@ module.exports = (io) => {
       } else {
         socket.emit("unsuccess", {
           room: null,
-          type: "room_not_found",
+          type: "code_not_found",
         });
       }
     });

@@ -19,7 +19,7 @@ name_input.addEventListener("change", () => {
   if (name_input.value.trim() == "") {
     name_input.placeholder = t("no-name") + generate_randam_num();
   }
-  user_name = name_input;
+  user_name = name_input.value.trim();
 });
 
 const selects = document.querySelectorAll(".game-select");

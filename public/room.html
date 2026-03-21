@@ -8,8 +8,12 @@
   <body>
     <div class="wrapper">
       <div class="top-menu">
-        <button id="open_exit" class="button-letter">⍇</button>
-        <div id="room_code_container"></div>
+        <div class="left-group">
+          <button id="open_exit" class="button-letter caution">⍇</button>
+        </div>
+        <div class="center-group">
+          <div id="room_code_container"></div>
+        </div>
         <div class="right-group">
           <button id="open_setting" class="button-letter">⚙</button>
         </div>
@@ -17,12 +21,21 @@
 
       <div class="center-menu">
         <div class="room-modal" id="room_manager_modal">
-          <button id="create_room" data-i18n="ui.create"></button>
-          <button id="open_join" data-i18n="ui.join"></button>
+          <div id="button_container">
+            <button
+              class="button-l able"
+              id="create_room"
+              data-i18n="ui.create"
+            ></button>
+            <button
+              class="button-l able"
+              id="open_join"
+              data-i18n="ui.join"
+            ></button>
+          </div>
         </div>
         <div class="room-modal hidden" id="room_wait_modal">
           <div id="player_list"></div>
-          <span id="player_num"></span>
         </div>
       </div>
 
@@ -36,18 +49,44 @@
 
       <div class="overlay hidden" id="overlay">
         <div class="modal hidden" id="join_modal">
-          <input type="text" inputmode="numeric" id="room_code" />
-          <button id="join_room" data-i18n="ui.join"></button>
+          <p data-i18n="ui.room_code"></p>
+          <div id="room_code_input_container">
+            <input
+              class="input-s"
+              type="text"
+              inputmode="numeric"
+              id="room_code"
+            />
+            <button
+              class="button-m able"
+              id="join_room"
+              data-i18n="ui.join"
+            ></button>
+          </div>
         </div>
+
         <div class="modal hidden" id="message_modal">
           <p id="message"></p>
-          <button class="hidden" id="message_button" data-i18n="back"></button>
+          <button
+            class="button-m able hidden"
+            id="message_button"
+            data-i18n="ui.back"
+          ></button>
         </div>
+
         <div class="modal hidden" id="exit_modal">
           <span id="exit_notes" data-i18n="ui.exit_notes"></span>
           <div id="button_group">
-            <button id="exit_room" data-i18n="ui.exit"></button>
-            <button id="close_exit" data-i18n="ui.back"></button>
+            <button
+              class="button-m able caution"
+              id="exit_room"
+              data-i18n="ui.exit"
+            ></button>
+            <button
+              class="button-m able"
+              id="close_exit"
+              data-i18n="ui.back"
+            ></button>
           </div>
         </div>
         <div class="modal" id="setting_modal">
