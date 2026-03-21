@@ -2,12 +2,13 @@ module.exports = {
   //===init===
   status_init: (status) => {
     const new_status = { ...status };
+
     new_status.round = 1;
     new_status.turn = "init";
+    new_status.current_card = 0;
     new_status.card_target = null;
     new_status.card_target_record = null;
     new_status.cards_selected = [];
-    new_status.card_min = null;
     new_status.does_wait = false;
     new_status.players.forEach((player) => {
       player.cards = [1, 2, 3, 4, 5];
@@ -29,12 +30,8 @@ module.exports = {
   //===logic===
   make_move: (status, move) => {
     const new_status = { ...status };
-    const player = new_status.players.find((p) => p.id == move.id);
-    if (!player) {
-      //bug処理
-    }
 
-    switch (move.type) {
+    switch (status.turn) {
       case "init":
         player.ready = true;
         if (!is_all_ready(new_status.players)) {
@@ -46,11 +43,12 @@ module.exports = {
         new_status.players = all_not_ready(new_status.players);
         new_status.players = all_can_move(new_status.players, true);
 
+        //init status
         new_status.round = 1;
+        new_status.current_card = 0;
         new_status.card_target = null;
         new_status.card_target_record = null;
         new_status.cards_selected = [];
-        new_status.card_min = null;
         new_status.players.forEach((player) => {
           player.cards = [1, 2, 3, 4, 5];
           player.cards_alive = [];
@@ -83,6 +81,7 @@ module.exports = {
         }
         new_status.players = all_not_ready(new_status.players);
         new_status.players = all_can_move(new_status.players, false);
+        new_status.turn = "target";
 
         new_status.cards_selected = new_status.players
           .map((p) => p.card_selected)
@@ -90,7 +89,6 @@ module.exports = {
         new_status.cards_selected.sort((a, b) => a - b);
         new_status.card_min = new_status.cards_selected[0];
 
-        new_status.turn = "target";
         break;
       case "target":
         player.ready = true;
@@ -106,6 +104,8 @@ module.exports = {
           new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
+
+        /*
 
         new_status.card_min = new_status.cards_selected[0];
         const count = new_status.cards_selected.filter(
@@ -163,6 +163,71 @@ module.exports = {
             (p) => p.card_selected == new_status.card_min,
           ).can_move = true;
         }
+        break;*/
+
+        //check targetable player
+        const count = new_status.cards_selected.filter(
+          (c) => c == new_status.current_card,
+        ).length;
+        new_status.cards_selected = new_status.cards_selected.filter(
+          (c) => c != new_status.current_card,
+        );
+
+        //kill targeted player
+        if (new_status.card_target) {
+          const players_dead = new_status.players.filter(
+            (p) => p.card_selected == new_status.card_target,
+          );
+          players_dead.forEach((p) => {
+            p.death = true;
+            p.dead_round = true;
+            p.card_selected = null;
+          });
+          new_status.cards_selected = new_status.cards_selected.filter(
+            (c) => c != new_status.card_target,
+          );
+          new_status.card_target = null;
+        }
+
+        //alive targeter
+        new_status.players.forEach((p) => {
+          if (p.card_selected == new_status.current_card) {
+            p.cards_alive.push(new_status.current_card);
+          }
+        });
+
+        //end of target
+        if (new_status.current_card == 5) {
+          new_status.round++;
+          const count = new_status.players.filter((p) => !p.death).length;
+
+          new_status.players.forEach((p) => {
+            p.card_selected = null;
+          });
+
+          if (new_status.round == 4 || count == 1) {
+            new_status.players = all_can_move(new_status.players, false);
+            new_status.turn = "point";
+            break;
+          }
+          new_status.players = all_can_move(new_status.players, true);
+          new_status.turn = "select";
+
+          break;
+        }
+
+        //decide tageter
+        if (count > 1) {
+          //more than one
+          new_status.players = all_can_move(new_status.players, false);
+        } else {
+          new_status.players = all_can_move(new_status.players, false);
+          new_status.players.find(
+            (p) => p.card_selected == new_status.current_card,
+          ).can_move = true;
+        }
+
+        new_status.current_card += 1;
         break;
 
       case "point":
@@ -243,30 +308,33 @@ module.exports = {
     return new_status;
   },
 
-  check_submittion: (status, submittion) => {
+  check_move: (status, move) => {
     const new_status = { ...status };
-    const player = new_status.players.find((p) => p.id == submittion.id);
+    const player = new_status.players.find((p) => p.id == move.id);
 
-    console.log("game1: player find?: ", Boolean(player));
-
-    if (!player) return false;
+    if (!player)
+      return {
+        result: false,
+        reason: "player_not_found",
+      };
 
     switch (new_status.turn) {
       case "select":
-        console.log(
-          "game1: card exist?: ",
-          player.cards.includes(submittion.value),
-        );
-        console.log("game1: ", submittion.value, ",", player.cards);
+        const has_card = player.cards.includes(move.value);
 
-        return player.cards.includes(submittion.value);
+        return {
+          result: has_card,
+          reason: "card_not_found",
+        };
       case "target":
-        console.log("game1: ", submittion.value, ",", new_status.card_min);
-        return (
-          player.card_selected == new_status.card_min &&
-          new_status.card_min < submittion.value &&
-          [1, 2, 3, 4, 5].includes(submittion.value)
-        );
+        console.log("game1: ", move.value, ",", new_status.current_card);
+        return {
+          result:
+            player.card_selected == new_status.current_card &&
+            new_status.card_min < move.value &&
+            [1, 2, 3, 4, 5].includes(move.value),
+          reason: "unable_card_selected",
+        };
     }
   },
 

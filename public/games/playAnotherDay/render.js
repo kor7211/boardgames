@@ -1,5 +1,9 @@
 import { t } from "../../i18n/i18n.js";
+import { Common } from "../../js/common.js";
 
+const common = new Common();
+
+//== const Element ==
 const score_board = document.getElementById("score_board");
 const targeter = document.getElementById("targeter");
 const hands_user = document.getElementById("hands_user");
@@ -56,7 +60,7 @@ const image_map = {
 
 let player_list = [];
 
-export function render(status, id) {
+export function render({ status, id, func, type }) {
   console.log("render: start_rendering");
 
   const user = status.players.find((p) => p.id == id);
@@ -70,7 +74,7 @@ export function render(status, id) {
     user: user,
   };
 
-  set_language();
+  common.set_language();
 
   init_player_fields(data);
 
@@ -492,11 +496,10 @@ export function set_exit(func, status) {
 }
 
 //--language--
-function set_language() {
-  document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.dataset.i18n;
-    el.textContent = t(key);
-  });
+function set_i18n(el, key) {
+  el.data.i18n = key;
+  el.textContent = t(key);
+  return el;
 }
 
 //--sleep--

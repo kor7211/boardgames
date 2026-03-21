@@ -2,19 +2,24 @@
   <header>
     <meta charset="utf-8" />
     <title>playAnotherDay</title>
+    <link rel="stylesheet" href="../../css/common.css" />
     <link rel="stylesheet" href="style.css" />
   </header>
   <body>
     <div id="wrapper">
       <div id="top_menu">
-        <button id="open_exit">⍇</button>
-        <button id="submit" data-i18n="ui.submit"></button>
-        <div id="right_group">
-          <button id="open_score">⊟</button>
-          <button id="open_setting">⚙</button>
+        <div class="left-group">
+          <button class="button-letter caution able" id="open_exit">⍇</button>
+        </div>
+        <div class="center-group">
+          <button class="button-l" id="submit" data-i18n="ui.submit"></button>
+        </div>
+        <div class="right-group">
+          <button class="button-letter able" id="open_score">⊟</button>
+          <button class="button-letter able" id="open_setting">⚙</button>
         </div>
       </div>
-      <div id="game_area">
+      <div class="center-menu" id="game_area">
         <div id="table">
           <div class="player_field p1"></div>
           <div class="player_field p2"></div>
@@ -29,24 +34,44 @@
 
       <div id="hands_user"></div>
 
-      <div id="overlay" class="hidden">
+      <div class="overlay hidden" id="overlay" class="hidden">
         <div class="modal hidden" id="score_modal">
           <div id="score_board"></div>
         </div>
+
+        <div class="modal hidden" id="message_modal">
+          <p id="message"></p>
+          <button
+            class="button-m able hidden"
+            id="message_button"
+            data-i18n="ui.back"
+          ></button>
+        </div>
+
         <div class="modal hidden" id="targeter_modal">
           <div id="targeter"></div>
         </div>
+
         <div class="modal hidden" id="exit_modal">
           <span id="exit_notes" data-i18n="ui.exit_notes"></span>
           <div id="button_group">
-            <button id="exit" data-i18n="ui.exit"></button>
-            <button id="close_exit" data-i18n="ui.back"></button>
+            <button
+              class="button-m caution able"
+              id="exit"
+              data-i18n="ui.exit"
+            ></button>
+            <button
+              class="button-m able"
+              id="close_exit"
+              data-i18n="ui.back"
+            ></button>
           </div>
         </div>
+
         <div class="modal hidden" id="setting_modal">
-          <div id="setting"></div>
-          <div id="rule_container">
-            <h1 data-i18n="rule."></h1>
+          <div class="setting-container" id="setting_container"></div>
+          <div id="rule_cover">
+            <div id="rule_container" class="rule-container"></div>
           </div>
         </div>
       </div>

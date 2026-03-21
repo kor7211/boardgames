@@ -37,6 +37,7 @@ socket.on("success", ({ status, type }) => {
       on_player_ready(status);
   }
 });
+function on_submittion_applied(status) {}
 
 function on_id_updated(status) {
   localStorage.setItem("player_id", socket.id);
@@ -44,10 +45,14 @@ function on_id_updated(status) {
   console.log("id: ", socket.id);
 }
 
+function on_player_ready(status) {}
 socket.on("unsuccess", ({ room, status, type, reason, move }) => {
   if (type == null) return;
 
   switch (type) {
+    case "old_room_exist":
+      on_old_room_exist();
+      break;
     case "game_not_found":
       on_game_not_found();
       break;
@@ -57,6 +62,9 @@ socket.on("unsuccess", ({ room, status, type, reason, move }) => {
     case "room_not_found":
       on_room_not_found();
       break;
+    case "code_not_found":
+      on_code_not_found();
+      break;
     case "player_not_found":
       on_player_not_found(room);
       break;
@@ -65,6 +73,68 @@ socket.on("unsuccess", ({ room, status, type, reason, move }) => {
       break;
   }
 });
+
+function on_old_room_exist() {
+  const message = document.getElementById("message");
+  message.innerText = t("error.old_room_exist");
+  const button = document.getElementById("message_button");
+  button.classList.remove("hidden");
+  button.onclick = () => {
+    button.classList.add("hidden");
+    socket.emit("exit_room");
+  };
+  common.display_modal("message", false);
+}
+
+function on_game_not_found() {
+  const message = document.getElementById("message");
+  message.innerText = t("error.game_not_found");
+  const button = document.getElementById("message_button");
+  button.classList.remove("hidden");
+  button.onclick = () => {
+    button.classList.add("hidden");
+    back_hub();
+  };
+  common.display_modal("message", false);
+}
+
+function on_room_in_game(room) {
+  const message = document.getElementById("message");
+  message.innerText = t("error.room_in_game");
+  common.display_modal("message");
+}
+
+function on_room_not_found() {
+  const message = document.getElementById("message");
+  message.innerText = t("error.room_not_found");
+  const button = document.getElementById("message_button");
+  button.classList.remove("hidden");
+  button.onclick = () => {
+    button.classList.add("hidden");
+    back_hub();
+  };
+  common.display_modal("message", false);
+}
+
+function on_code_not_found() {
+  const message = document.getElementById("message");
+  message.innerText = t("error.room_not_found");
+  common.display_modal("message");
+}
+
+function on_player_not_found(room) {
+  const message = document.getElementById("message");
+  message.innerText = t("error.player_not_found");
+  const button = document.getElementById("message_button");
+  button.classList.remove("hidden");
+  button.onclick = () => {
+    button.classList.add("hidden");
+    socket.emit("exit_room");
+  };
+  common.display_modal("message", false);
+}
+
+function on_submittion_not_applied({ status, reason, move }) {}
 
 socket.on("status_updated", ({ status, type }) => {
   if (type == null) return;
@@ -156,19 +226,20 @@ function empty_submit(status) {
 
   socket.emit("player_move", data);
 }
-
 function on_submit(room_code) {
-  console.log("try_submit");
+  console.log("submit");
   const data = {
     room_code: room_code,
-    submittion: {
+    move: {
       id: socket.id,
+      type: status.turn,
       value: user_input,
     },
   };
-  socket.emit("player_try", data);
+  socket.emit("player_move", data);
 }
 
+/*
 socket.on("can_submit", ({ can_submit, status, submittion }) => {
   if (can_submit) {
     const data = {
@@ -189,3 +260,4 @@ socket.on("can_submit", ({ can_submit, status, submittion }) => {
     success_submit(false);
   }
 });
+*/
