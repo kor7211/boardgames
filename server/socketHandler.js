@@ -235,6 +235,11 @@ module.exports = (io) => {
           room: null,
           type: "room_not_found",
         });
+
+        io.to(room).emit("unsuccess", {
+          type: "unsuccess_reconnection",
+        });
+
         return;
       }
       if (room.is_in_game) {
@@ -243,6 +248,11 @@ module.exports = (io) => {
           room: room,
           type: "room_in_game",
         });
+
+        io.to(room).emit("unsuccess", {
+          type: "unsuccess_reconnection",
+        });
+
         return;
       }
 
@@ -254,6 +264,11 @@ module.exports = (io) => {
           room: room,
           type: "player_not_found",
         });
+
+        io.to(room).emit("unsuccess", {
+          type: "unsuccess_reconnection",
+        });
+
         return;
       }
 
