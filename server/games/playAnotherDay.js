@@ -9,7 +9,7 @@ module.exports = {
     new_status.card_target = null;
     new_status.card_target_record = null;
     new_status.cards_selected = [];
-    new_status.does_wait = false;
+
     new_status.players.forEach((player) => {
       player.cards = [1, 2, 3, 4, 5];
       player.cards_alive = [];
@@ -35,10 +35,8 @@ module.exports = {
       case "init":
         player.ready = true;
         if (!is_all_ready(new_status.players)) {
-          new_status.does_wait = true;
           break;
         } else {
-          new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
         new_status.players = all_can_move(new_status.players, true);
@@ -73,11 +71,8 @@ module.exports = {
           player.card_selected = null;
         }
         if (!is_all_ready(new_status.players)) {
-          new_status.does_wait = true;
-
           break;
         } else {
-          new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
         new_status.players = all_can_move(new_status.players, false);
@@ -97,11 +92,8 @@ module.exports = {
           new_status.card_target_record = move.value;
         }
         if (!is_all_ready(new_status.players)) {
-          new_status.does_wait = true;
-
           break;
         } else {
-          new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
 
@@ -233,11 +225,8 @@ module.exports = {
       case "point":
         player.ready = true;
         if (!is_all_ready(new_status.players)) {
-          new_status.does_wait = true;
-
           break;
         } else {
-          new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
 
@@ -263,11 +252,8 @@ module.exports = {
       case "end":
         player.ready = true;
         if (!is_all_ready(new_status.players)) {
-          new_status.does_wait = true;
-
           break;
         } else {
-          new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
 
@@ -291,11 +277,8 @@ module.exports = {
       case "result":
         player.ready = true;
         if (!is_all_ready(new_status.players)) {
-          new_status.does_wait = true;
-
           break;
         } else {
-          new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
 
@@ -342,8 +325,6 @@ module.exports = {
     const new_status = { ...status };
     const player = new_status.players.find((p) => p.id == id);
     if (!player) return new_status;
-
-    new_status.does_wait = false;
 
     switch (new_status.turn) {
       case "select":

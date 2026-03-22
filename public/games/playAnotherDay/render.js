@@ -17,32 +17,23 @@ const overlay = document.getElementById("overlay");
 
 const open_score = document.getElementById("open_score");
 open_score.onclick = () => {
-  display_modal("score");
-  overlay.onclick = () => {
-    overlay.classList.add("hidden");
-    overlay.onclick = null;
-  };
+  common.display_modal("score", true);
 };
 
 const open_exit = document.getElementById("open_exit");
 const exit = document.getElementById("exit");
 const close_exit = document.getElementById("close_exit");
 open_exit.onclick = () => {
-  display_modal("exit");
-  close_exit = () => {
+  common.display_modal("exit", false);
+  close_exit.onclick = () => {
     overlay.classList.add("hidden");
   };
 };
 
-const open_setting = document.getElementById("open_setting");
-open_setting.onclick = () => {
-  display_modal("setting");
-  overlay.onclick = () => {
-    overlay.classList.add("hidden");
-    overlay.onclick = null;
-  };
-};
+//Valiables
+let player_list = [];
 
+//saurce
 const image_map = {
   card_back: "/images/game1/playAnotherDay_card_back.png",
   card_1: "/images/game1/playAnotherDay_card_1.png",
@@ -58,15 +49,46 @@ const image_map = {
   card_order_5: "/images/game1/playAnotherDay_card_order_5.png",
 };
 
-let player_list = [];
+export function render({ status, id, type, detail, functions }) {
+  if (functions.exit_game.able) {
+    exit.onclick = null;
+    exit.onclick = () => {
+      functions.exit_game.function({
+        status: status,
+      });
+    };
+    exit.classList.add("able");
+  } else {
+    exit.onclick = null;
+    exit.classList.remove("able");
+  }
 
-export function render({ status, id, func, type }) {
-  console.log("render: start_rendering");
+  if (functions.on_submit.able) {
+    submit.onclick = null;
+    submit.onclick = () => {
+      functions.on_submit.function({
+        status: status,
+        user_input: input,
+      });
+    };
+    submit.classList.add("able");
+  } else {
+    submit.onclick = null;
+    submit.classList.remove("able");
+  }
+
+  switch (type) {
+    case "success":
+      break;
+    case "unsuccess":
+      break;
+    case "status_updated":
+      break;
+  }
 
   const user = status.players.find((p) => p.id == id);
   if (!user) {
     console.log("render: player_not_found");
-
     return;
   }
   const data = {
@@ -410,10 +432,7 @@ function make_board_card(data) {
 }
 
 //--update function--
-function init_player_fields(data) {
-  const status = data.status;
-  const user = data.user;
-
+function init_player_fields({ status, user }) {
   let players = status.players.sort((a, b) => a.unique_id - b.unique_id);
   const user_index = players.map((p) => p.unique_id).indexOf(user.unique_id);
   player_list = [...players.slice(user_index), ...players.slice(0, user_index)];
@@ -442,17 +461,18 @@ function update_card_selected(card = null, strength = null) {
   }
   if (strength) {
     card.classList.add("selected");
-    submit.classList.add("selected");
+    submit.classList.add("able");
 
     input = strength;
   } else {
-    submit.classList.remove("selected");
+    submit.classList.remove("able");
 
     input = null;
   }
 }
 
 //--submit--
+/*
 export function enable_submit(enable, func = null, room_code = null) {
   if (enable) {
     submit.onclick = () => {
@@ -468,26 +488,7 @@ export function enable_submit(enable, func = null, room_code = null) {
     submit.classList.add("disable");
     submit.disabled = true;
   }
-}
-
-export function success_submit(is_success) {
-  if (is_success) {
-    overlay.classList.add("hidden");
-  } else {
-    update_card_selected();
-  }
-}
-
-//--modal--
-function display_modal(type) {
-  overlay.classList.remove("hidden");
-
-  document.querySelectorAll(`.modal`).forEach((m) => {
-    m.classList.add("hidden");
-  });
-
-  document.getElementById(`${type}_modal`).classList.remove("hidden");
-}
+}*/
 
 export function set_exit(func, status) {
   exit.onclick = () => {
