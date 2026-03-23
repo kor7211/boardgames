@@ -43,28 +43,28 @@ socket.on("unsuccess", ({ room, status, type, reason, move }) => {
   let data = null;
   switch (type) {
     case "old_room_exist":
-      data = make_data(status, "unsuccess", type, true, true);
-      on_old_room_exist();
+      localStorage.setItem("error_type", type);
+      back_to_hub();
       break;
     case "game_not_found":
-      data = make_data(status, "unsuccess", type, true, true);
-      on_game_not_found();
+      localStorage.setItem("error_type", type);
+      back_to_hub();
       break;
     case "room_in_game":
-      data = make_data(status, "unsuccess", type, true, true);
-      on_room_in_game(room);
+      localStorage.setItem("error_type", type);
+      back_to_hub();
       break;
     case "room_not_found":
-      data = make_data(status, "unsuccess", type, true, true);
-      on_room_not_found();
+      localStorage.setItem("error_type", type);
+      back_to_hub();
       break;
     case "code_not_found":
-      data = make_data(status, "unsuccess", type, true, true);
-      on_code_not_found();
+      localStorage.setItem("error_type", type);
+      back_to_hub();
       break;
     case "player_not_found":
-      data = make_data(status, "unsuccess", type, true, true);
-      on_player_not_found(room);
+      localStorage.setItem("error_type", type);
+      back_to_hub();
       break;
     case "submittion_not_applied":
       data = make_data(status, "unsuccess", type, true, true);
@@ -73,66 +73,6 @@ socket.on("unsuccess", ({ room, status, type, reason, move }) => {
   }
   if (data != null) render(data);
 });
-
-function on_old_room_exist() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.old_room_exist");
-  const button = document.getElementById("message_button");
-  button.classList.remove("hidden");
-  button.onclick = () => {
-    button.classList.add("hidden");
-    socket.emit("exit_room");
-  };
-  common.display_modal("message", false);
-}
-
-function on_game_not_found() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.game_not_found");
-  const button = document.getElementById("message_button");
-  button.classList.remove("hidden");
-  button.onclick = () => {
-    button.classList.add("hidden");
-    back_hub();
-  };
-  common.display_modal("message", false);
-}
-
-function on_room_in_game(room) {
-  const message = document.getElementById("message");
-  message.innerText = t("error.room_in_game");
-  common.display_modal("message");
-}
-
-function on_room_not_found() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.room_not_found");
-  const button = document.getElementById("message_button");
-  button.classList.remove("hidden");
-  button.onclick = () => {
-    button.classList.add("hidden");
-    back_hub();
-  };
-  common.display_modal("message", false);
-}
-
-function on_code_not_found() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.room_not_found");
-  common.display_modal("message");
-}
-
-function on_player_not_found(room) {
-  const message = document.getElementById("message");
-  message.innerText = t("error.player_not_found");
-  const button = document.getElementById("message_button");
-  button.classList.remove("hidden");
-  button.onclick = () => {
-    button.classList.add("hidden");
-    socket.emit("exit_room");
-  };
-  common.display_modal("message", false);
-}
 
 function on_submittion_not_applied({ status, reason, move }) {}
 
@@ -154,10 +94,17 @@ socket.on("status_updated", ({ status, type }) => {
   if (data != null) render(data);
 });
 
+function on_player_reconnected(status) {}
+
+function on_player_moved(status) {}
 //--exit--
 socket.on("exit_game", () => {
-  window.location.href = "./../../hub.html";
+  back_to_hub();
 });
+
+function back_to_hub() {
+  window.location.href = "./../../hub.html";
+}
 
 //== usefull functions ==
 function empty_submit(status) {

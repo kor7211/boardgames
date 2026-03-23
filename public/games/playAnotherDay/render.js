@@ -79,61 +79,72 @@ export function render({ status, id, type, detail, functions }) {
 
   switch (type) {
     case "success":
+      switch (detail) {
+        case "submittion_applied":
+          break;
+        case "id_updated":
+          break;
+      }
       break;
     case "unsuccess":
+      switch (detail) {
+        case "submittion_not_applied":
+          break;
+      }
       break;
     case "status_updated":
-      break;
-  }
+      switch (detail) {
+        case "init":
+          common.set_language();
+          break;
+        case "player_reconnected":
+          break;
+        case "player_moved":
+          const user = status.players.find((p) => p.id == id);
+          if (!user) {
+            console.log("render: player_not_found");
+            return;
+          }
+          const data = {
+            status: status,
+            user: user,
+          };
 
-  const user = status.players.find((p) => p.id == id);
-  if (!user) {
-    console.log("render: player_not_found");
-    return;
-  }
-  const data = {
-    status: status,
-    user: user,
-  };
+          init_player_fields(data);
+          render_score_board(data);
+          render_card_order(data);
 
-  common.set_language();
+          if (status.does_wait) {
+            switch (status.turn) {
+              case "select":
+                render_select_table(data);
 
-  init_player_fields(data);
-
-  render_score_board(data);
-  render_card_order(data);
-
-  if (status.does_wait) {
-    switch (status.turn) {
-      case "select":
-        render_select_table(data);
-
-        if (user.ready) render_my_hands(data);
-        break;
-    }
-    return;
-  }
-
-  overlay.classList.add("hidden");
-  overlay.onclick = null;
-
-  switch (status.turn) {
-    case "init":
-      break;
-    case "select":
-      render_select_table(data);
-      render_my_hands(data);
-      break;
-    case "target":
-      render_target_table(data);
-      render_my_hands(data);
-      render_targeter(data);
-      break;
-    case "point":
-      break;
-    case "end":
-      break;
-    case "back":
+                if (user.ready) render_my_hands(data);
+                break;
+            }
+          } else {
+            switch (status.turn) {
+              case "init":
+                break;
+              case "select":
+                render_select_table(data);
+                render_my_hands(data);
+                break;
+              case "target":
+                render_target_table(data);
+                render_my_hands(data);
+                render_targeter(data);
+                break;
+              case "point":
+                break;
+              case "end":
+                break;
+              case "back":
+                break;
+            }
+          }
+          break;
+      }
       break;
   }
 }
@@ -489,12 +500,6 @@ export function enable_submit(enable, func = null, room_code = null) {
     submit.disabled = true;
   }
 }*/
-
-export function set_exit(func, status) {
-  exit.onclick = () => {
-    func(status);
-  };
-}
 
 //--language--
 function set_i18n(el, key) {

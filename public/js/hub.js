@@ -38,6 +38,21 @@ selects.forEach((select) => {
   });
 });
 
+const error = localStorage.getItem("error_type");
+if (error) {
+  const message = document.getElementById("message");
+  common.set_i18n(message, `error.${error}`);
+  const button = document.getElementById("message_button");
+  button.classList.remove("hidden");
+  button.onclick = () => {
+    button.classList.add("hidden");
+    const overlay = document.getElementById("overlay");
+    overlay.classList.add("hidden");
+  };
+  common.display_modal("message", false);
+}
+localStorage.removeItem("error_type");
+
 function on_ready() {
   if (!game) return;
 

@@ -36,6 +36,12 @@ export class Common {
     });
   }
 
+  set_i18n(el, key) {
+    el.dataset.i18n = key;
+    el.textContent = t(key);
+    return el;
+  }
+
   display_modal(type, clickable_overlay = true) {
     this.overlay.classList.remove("hidden");
 
@@ -80,6 +86,7 @@ export class Common {
       select.addEventListener("change", (event) => {
         set_lang(event.currentTarget.value);
         localStorage.setItem("lang", event.currentTarget.value);
+        this.set_language();
       });
       div.appendChild(select);
       container.appendChild(div);
