@@ -343,7 +343,7 @@ module.exports = (io) => {
       room.status = new_status;
 
       socket.emit("success", {
-        room: room.status,
+        status: room.status,
         type: "submittion_applied",
       });
 

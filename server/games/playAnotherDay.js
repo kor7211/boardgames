@@ -31,6 +31,7 @@ module.exports = {
   //===logic===
   make_move: (status, move) => {
     const new_status = { ...status };
+    const player = new_status.players.find((p) => p.id == move.id);
 
     switch (status.turn) {
       case "init":
