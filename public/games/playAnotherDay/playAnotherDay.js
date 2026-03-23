@@ -10,10 +10,12 @@ socket.emit("complete_reconnection", room_code);
 //===connect to SH===
 //--init--
 socket.on("init", (status) => {
+  console.log("init: ", status);
   render(make_data(status, "status_updated", "init", true, true));
 });
 //--success--
-socket.on("success", ({ status, type }) => {
+socket.on("success", ({ room, status, type }) => {
+  console.log("success: ", status, type);
   if (type == null) return;
   let data = null;
   switch (type) {
@@ -22,7 +24,6 @@ socket.on("success", ({ status, type }) => {
       on_submittion_applied(status);
       break;
     case "id_updated":
-      data = make_data(status, "success", type, true, false);
       on_id_updated(status);
       break;
   }

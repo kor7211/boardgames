@@ -35,7 +35,8 @@ export class Common {
       el.textContent = t(key);
     });
 
-    if (document.querySelector("[data-rule]")) {
+    const el = document.querySelector("[data-rule]");
+    if (el) {
       const key = el.dataset.rule;
       this.render_rule(t(key), key);
     }

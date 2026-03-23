@@ -332,6 +332,10 @@ module.exports = {
           reason: "unable_card_selected",
         };
     }
+    return {
+      result: true,
+      reason: "regard as empty sub",
+    };
   },
 
   on_disconnected(status, id) {

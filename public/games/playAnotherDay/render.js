@@ -147,6 +147,9 @@ export function render({ status, id, type, detail, functions }) {
       }
       break;
   }
+  if (functions.on_end_render.able) {
+    functions.on_end_render.function(status);
+  }
 }
 
 //--render function--
