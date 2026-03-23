@@ -1,20 +1,37 @@
 {
   "no-name": "no-name",
   "ui": {
+    "submit": "submit",
     "close": "close",
     "back": "back",
-    "open_score": "score",
-    "user_name": "player",
+    "join": "join",
+    "create": "create",
+    "open_score": "show score",
+    "user_name": "name",
     "point": "point",
-    "tip": "food tip",
+    "tip": "tip",
     "ready": "ready",
     "not_ready": "not ready",
     "exit": "exit",
-    "exit_notes": "Do you really exit game?"
+    "exit_notes": "Do you really exit game?",
+    "room_code": "room code",
+    "game1": "Play Another Day"
+  },
+  "error": {
+    "game_not_found": "Unknown game found.",
+    "room_not_found": "Room does not exist.",
+    "room_in_game": "This room is in game.",
+    "old_game_exist": "Old room found.",
+    "player_not_found": "Unknown id found."
   },
   "rule": {
-    "game1": {
-      "step1": ""
-    }
+    "game1": [
+      { "type": "h1", "text": "Play Another Day" },
+      { "type": "h2", "text": "test aaa(プレイアナザーデイの概要)" },
+      {
+        "type": "p",
+        "text": " test aaa(異なる動物カードを使い、他のプレイヤーを狩りながら生き残りを目指すバッティングゲーム！)"
+      }
+    ]
   }
 }

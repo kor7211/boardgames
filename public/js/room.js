@@ -6,7 +6,7 @@ const common = new Common();
 const game_type = localStorage.getItem("game_type");
 const user_name = localStorage.getItem("user_name");
 const rule = t(`rule.${game_type}`);
-if (rule) common.render_rule(rule);
+if (rule) common.render_rule(rule, `rule.${game_type}`);
 
 const socket = io();
 
@@ -65,14 +65,14 @@ function update_player_list(room) {
       tr.appendChild(td);
     }
     {
-      const td = document.createElement("td");
-      td.classList.add("td--ready");
+      const td = common.set_i18n(
+        document.createElement("td"),
+        p.ready ? "ui.ready" : "ui.not_ready",
+      );
       if (p.ready) {
-        td.innerText = t("ui.ready");
         ready_num += 1;
-      } else {
-        td.innerText = t("ui.not_ready");
       }
+      td.classList.add("td--ready");
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
@@ -90,7 +90,12 @@ function display_room_code(room_code) {
   const room_code_container = document.getElementById("room_code_container");
   room_code_container.innerHTML = "";
   const p = document.createElement("p");
-  p.innerText = `${t("ui.room_code")}: ${room_code}`;
+  p.appendChild(
+    common.set_i18n(document.createElement("span"), "ui.room_code"),
+  );
+  const span = document.createElement("span");
+  span.innerText = ` : ${room_code}`;
+  p.appendChild(span);
   room_code_container.appendChild(p);
 }
 
@@ -202,8 +207,7 @@ socket.on("unsuccess", ({ room, type }) => {
 });
 
 function on_old_room_exist(room) {
-  const message = document.getElementById("message");
-  message.innerText = t("error.old_room_exist");
+  common.set_i18n(document.getElementById("message"), "error.old_room_exist");
   const button = document.getElementById("message_button");
   button.classList.remove("hidden");
   button.onclick = () => {
@@ -214,8 +218,7 @@ function on_old_room_exist(room) {
 }
 
 function on_game_not_found() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.game_not_found");
+  common.set_i18n(document.getElementById("message"), "error.game_not_found");
   const button = document.getElementById("message_button");
   button.classList.remove("hidden");
   button.onclick = () => {
@@ -226,14 +229,12 @@ function on_game_not_found() {
 }
 
 function on_room_in_game(room) {
-  const message = document.getElementById("message");
-  message.innerText = t("error.room_in_game");
+  common.set_i18n(document.getElementById("message"), "error.room_in_game");
   common.display_modal("message");
 }
 
 function on_room_not_found() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.room_not_found");
+  common.set_i18n(document.getElementById("message"), "error.room_not_found");
   const button = document.getElementById("message_button");
   button.classList.remove("hidden");
   button.onclick = () => {
@@ -244,14 +245,12 @@ function on_room_not_found() {
 }
 
 function on_code_not_found() {
-  const message = document.getElementById("message");
-  message.innerText = t("error.room_not_found");
+  common.set_i18n(document.getElementById("message"), "error.code_not_found");
   common.display_modal("message");
 }
 
 function on_player_not_found(room) {
-  const message = document.getElementById("message");
-  message.innerText = t("error.player_not_found");
+  common.set_i18n(document.getElementById("message"), "error.player_not_found");
   const button = document.getElementById("message_button");
   button.classList.remove("hidden");
   button.onclick = () => {

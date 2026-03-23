@@ -163,16 +163,15 @@ function render_score_board(data) {
   const tr = document.createElement("tr");
 
   function make_th(value, class_name) {
-    const th = document.createElement("th");
-    th.innerText = value;
+    const th = common.set_i18n(document.createElement("th"), value);
     th.classList.add(class_name);
 
     tr.appendChild(th);
   }
-  make_th(t("ui.user_name"), "user_name");
-  make_th(t("ui.point"), "point");
-  make_th(t("ui.game1.tip"), "tip");
-  make_th(t("ui.ready"), "ready");
+  make_th("ui.user_name", "user_name");
+  make_th("ui.point", "point");
+  make_th("ui.game1.tip", "tip");
+  make_th("ui.ready", "ready");
 
   thead.appendChild(tr);
 
@@ -355,8 +354,7 @@ function render_targeter(data) {
 
   if (!user.can_move) return;
 
-  const button = document.createElement("button");
-  button.innerText = t("ui.submit");
+  const button = common.set_i18n(document.createElement("button"), "ui.submit");
   button.id = "submit_target";
 
   function update_submit(enable = false) {
@@ -502,11 +500,6 @@ export function enable_submit(enable, func = null, room_code = null) {
 }*/
 
 //--language--
-function set_i18n(el, key) {
-  el.data.i18n = key;
-  el.textContent = t(key);
-  return el;
-}
 
 //--sleep--
 function sleep(ms) {

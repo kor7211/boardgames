@@ -34,6 +34,11 @@ export class Common {
       const key = el.dataset.i18n;
       el.textContent = t(key);
     });
+
+    if (document.querySelector("[data-rule]")) {
+      const key = el.dataset.rule;
+      this.render_rule(t(key), key);
+    }
   }
 
   set_i18n(el, key) {
@@ -93,10 +98,14 @@ export class Common {
     }
   }
 
-  render_rule(rule) {
+  render_rule(rule, path) {
     if (rule == null) return;
 
     const container = document.getElementById("rule_container");
+    container.dataset.rule = container.dataset.rule
+      ? container.dataset.rule
+      : path;
+
     container.innerHTML = "";
     for (const state of rule) {
       const el = document.createElement(state.type);

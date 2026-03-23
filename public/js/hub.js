@@ -33,8 +33,7 @@ selects.forEach((select) => {
     game = event.currentTarget.dataset.game;
 
     ready.classList.add("able");
-    const rule = t(`rule.${game}`);
-    common.render_rule(rule);
+    common.render_rule(t(`rule.${game}`), `rule.${game}`);
   });
 });
 
