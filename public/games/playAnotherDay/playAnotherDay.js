@@ -20,7 +20,7 @@ socket.on("success", ({ room, status, type }) => {
   let data = null;
   switch (type) {
     case "submittion_applied":
-      data = make_data(status, "success", type, true, true);
+      data = make_data(status, "success", type, true, false);
       on_submittion_applied(status);
       break;
     case "id_updated":
@@ -68,7 +68,7 @@ socket.on("unsuccess", ({ room, status, type, reason, move }) => {
       back_to_hub();
       break;
     case "submittion_not_applied":
-      data = make_data(status, "unsuccess", type, true, true);
+      data = make_data(status, "unsuccess", type, true, false);
       on_submittion_not_applied({ status: status, reason: reason, move: move });
       break;
   }
@@ -88,7 +88,14 @@ socket.on("status_updated", ({ status, type }) => {
       on_player_reconnected(status);
       break;
     case "player_moved":
-      data = make_data(status, "status_updated", type, true, false);
+      const player = status.players.find((p) => p.id === socket.id);
+      data = make_data(
+        status,
+        "status_updated",
+        type,
+        true,
+        !(player.can_move || player.ready),
+      );
       on_player_moved(status);
       break;
   }
@@ -171,5 +178,9 @@ function on_end_render(status) {
     case "init":
       empty_submit(status);
       break;
+    case "target":
+      if (status.players.find((p) => p.id === socket.id).can_move == false) {
+        empty_submit(status);
+      }
   }
 }

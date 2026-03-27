@@ -217,11 +217,8 @@ module.exports = {
         }
 
         //decide tageter
-        if (count > 1) {
-          //more than one
-          new_status.players = all_can_move(new_status.players, false);
-        } else {
-          new_status.players = all_can_move(new_status.players, false);
+        new_status.players = all_can_move(new_status.players, false);
+        if (count == 1) {
           new_status.players.find(
             (p) => p.card_selected == new_status.current_card,
           ).can_move = true;
@@ -325,6 +322,12 @@ module.exports = {
         };
       case "target":
         console.log("game1: ", move.value, ",", new_status.current_card);
+        if (player.can_move == false) {
+          return {
+            result: move.value == null,
+            reason: "not_turn",
+          };
+        }
         return {
           result:
             player.card_selected == new_status.current_card &&

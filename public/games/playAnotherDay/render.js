@@ -117,9 +117,6 @@ export function render({ status, id, type, detail, functions }) {
           if (status.does_wait) {
             switch (status.turn) {
               case "select":
-                render_select_table(data);
-
-                if (user.ready) render_my_hands(data);
                 break;
             }
           } else {
@@ -128,7 +125,7 @@ export function render({ status, id, type, detail, functions }) {
                 break;
               case "select":
                 render_select_table(data);
-                render_my_hands(data);
+                if (user.ready) render_my_hands(data);
                 break;
               case "target":
                 render_target_table(data);
@@ -148,6 +145,7 @@ export function render({ status, id, type, detail, functions }) {
       break;
   }
   if (functions.on_end_render.able) {
+    console.log("emptysub : ", status);
     functions.on_end_render.function(status);
   }
 }
@@ -228,11 +226,14 @@ function render_card_order(data) {
   const status = data.status;
 
   let div;
-  if (status.turn == "target" && Boolean(status.card_min)) {
+  if (status.turn == "target" && Boolean(status.current_card)) {
     div = make_card({
       owner: "table",
-      image: image_map[`card_order_${status.card_min}`],
-      strength: status.card_min,
+      image:
+        status.current_card != 0
+          ? image_map[`card_order_${status.current_card}`]
+          : image_map["card_order"],
+      strength: status.current_card,
     });
   } else {
     div = make_card({
@@ -317,14 +318,14 @@ function render_target_table(data) {
         is_empty: false,
       });
       divs.div_card.classList.add("targeted");
-    } else if (status.card_min == p.card_selected_record) {
+    } else if (status.current_card == p.card_selected_record) {
       divs = make_board_card({
         player: p,
         strength: p.card_selected_record,
         is_empty: false,
       });
       divs.div_card.classList.add("hunting");
-    } else if (status.card_min > p.card_selected_record) {
+    } else if (status.current_card > p.card_selected_record) {
       divs = make_board_card({
         player: p,
         strength: p.card_selected_record,
@@ -362,12 +363,12 @@ function render_targeter(data) {
 
   function update_submit(enable = false) {
     if (enable) {
-      button.classList.add("selected");
+      button.classList.add("able");
       button.onclick = () => {
         submit.click();
       };
     } else {
-      button.classList.remove("selected");
+      button.classList.remove("able");
     }
   }
 

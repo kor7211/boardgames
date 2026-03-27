@@ -306,6 +306,7 @@ module.exports = (io) => {
     //===game logic===
     //---send player move to game logic---
     socket.on("player_move", (data) => {
+      //全員が提出後のラウンドが変わるところにフラグが欲しい
       const { room_code, move } = data;
 
       const room = rooms[room_code];
