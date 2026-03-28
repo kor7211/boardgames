@@ -114,31 +114,24 @@ export function render({ status, id, type, detail, functions }) {
           render_score_board(data);
           render_card_order(data);
 
-          if (status.does_wait) {
-            switch (status.turn) {
-              case "select":
-                break;
-            }
-          } else {
-            switch (status.turn) {
-              case "init":
-                break;
-              case "select":
-                render_select_table(data);
-                if (user.ready) render_my_hands(data);
-                break;
-              case "target":
-                render_target_table(data);
-                render_my_hands(data);
-                render_targeter(data);
-                break;
-              case "point":
-                break;
-              case "end":
-                break;
-              case "back":
-                break;
-            }
+          switch (status.turn) {
+            case "init":
+              break;
+            case "select":
+              render_select_table(data);
+              render_my_hands(data);
+              break;
+            case "target":
+              render_target_table(data);
+              render_my_hands(data);
+              if (user.can_move) render_targeter(data);
+              break;
+            case "point":
+              break;
+            case "end":
+              break;
+            case "back":
+              break;
           }
           break;
       }
@@ -356,10 +349,9 @@ function render_targeter(data) {
   const user = data.user;
   const status = data.status;
 
-  if (!user.can_move) return;
-
   const button = common.set_i18n(document.createElement("button"), "ui.submit");
   button.id = "submit_target";
+  button.classList.add("button-l");
 
   function update_submit(enable = false) {
     if (enable) {
@@ -383,19 +375,18 @@ function render_targeter(data) {
         update_card_selected();
         update_submit(false);
       });
-      div.classList.add("disable");
     } else {
       div.addEventListener("click", (event) => {
         update_card_selected(event.currentTarget, i);
         update_submit(true);
       });
-      div.classList.add("enable");
+      div.classList.add("able");
     }
     targeter.appendChild(div);
   }
 
   targeter.appendChild(document.createElement("div").appendChild(button));
-  display_modal("targeter");
+  common.display_modal("targeter", false);
 }
 //--make function--
 function make_card(card) {

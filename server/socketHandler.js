@@ -334,12 +334,15 @@ module.exports = (io) => {
         return;
       }
 
-      const new_status = room.game_info.logic.make_move(room.status, move);
+      const { new_status, emit_prop } = room.game_info.logic.make_move(
+        room.status,
+        move,
+      );
 
-      if (new_status == "exit_game") {
+      /*if (new_status == "exit_game") {
         exit_game(room_code);
         return;
-      }
+      }*/ // game終わりの処理を新しく、roomに返す
 
       room.status = new_status;
 
@@ -348,10 +351,13 @@ module.exports = (io) => {
         type: "submittion_applied",
       });
 
-      io.to(room_code).emit("status_updated", {
-        status: room.status,
-        type: "player_moved",
-      });
+      if (emit_prop.emit_all) {
+        io.to(room_code).emit("status_updated", {
+          status: room.status,
+          detail: emit_prop.emit_detail ?? null,
+          type: "player_moved",
+        });
+      }
     });
 
     socket.on("exit_game", (data) => {

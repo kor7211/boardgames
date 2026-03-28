@@ -78,7 +78,7 @@ socket.on("unsuccess", ({ room, status, type, reason, move }) => {
 function on_submittion_not_applied({ status, reason, move }) {}
 
 //--status updated
-socket.on("status_updated", ({ status, type }) => {
+socket.on("status_updated", ({ status, detail, type }) => {
   if (type == null) return;
 
   let data = null;
@@ -88,14 +88,25 @@ socket.on("status_updated", ({ status, type }) => {
       on_player_reconnected(status);
       break;
     case "player_moved":
+      console.log("detail: ", detail);
       const player = status.players.find((p) => p.id === socket.id);
-      data = make_data(
-        status,
-        "status_updated",
-        type,
-        true,
-        !(player.can_move || player.ready),
-      );
+      if (detail == "turn_updated") {
+        data = make_data(
+          status,
+          "status_updated",
+          type,
+          true,
+          !player.can_move,
+        );
+      } else if (detail == "current_card_updated") {
+        data = make_data(
+          status,
+          "status_updated",
+          type,
+          true,
+          !player.can_move,
+        );
+      }
       on_player_moved(status);
       break;
   }

@@ -33,6 +33,11 @@ module.exports = {
     const new_status = { ...status };
     const player = new_status.players.find((p) => p.id == move.id);
 
+    const emit_prop = {
+      emit_all: false,
+      detail: null,
+    };
+
     switch (status.turn) {
       case "init":
         player.ready = true;
@@ -40,6 +45,8 @@ module.exports = {
           new_status.does_wait = true;
           break;
         } else {
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "turn_updated";
         }
         new_status.does_wait = false;
         new_status.players = all_not_ready(new_status.players);
@@ -79,6 +86,8 @@ module.exports = {
           break;
         } else {
           new_status.does_wait = false;
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "turn_updated";
         }
         new_status.players = all_not_ready(new_status.players);
         new_status.players = all_can_move(new_status.players, false);
@@ -205,6 +214,8 @@ module.exports = {
             p.card_selected = null;
           });
 
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "turn_updated";
           if (new_status.round == 4 || count == 1) {
             new_status.players = all_can_move(new_status.players, false);
             new_status.turn = "point";
@@ -225,6 +236,8 @@ module.exports = {
         }
 
         new_status.current_card += 1;
+        emit_prop.emit_all = true;
+        emit_prop.emit_detail = "current_card_updated";
         break;
 
       case "point":
@@ -234,6 +247,8 @@ module.exports = {
           break;
         } else {
           new_status.does_wait = false;
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "turn_updated";
         }
         new_status.players = all_not_ready(new_status.players);
 
@@ -262,6 +277,8 @@ module.exports = {
           new_status.does_wait = true;
           break;
         } else {
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "turn_updated";
           new_status.does_wait = false;
         }
         new_status.players = all_not_ready(new_status.players);
@@ -290,16 +307,17 @@ module.exports = {
           break;
         } else {
           new_status.does_wait = false;
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "turn_updated";
         }
         new_status.players = all_not_ready(new_status.players);
 
         new_status.turn = "back";
         break;
       case "back":
-        return "exit_game";
     }
     console.log("GM1: turn:", new_status.turn, " id: ", player.id);
-    return new_status;
+    return { new_status, emit_prop };
   },
 
   check_move: (status, move) => {
