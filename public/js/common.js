@@ -34,12 +34,6 @@ export class Common {
       const key = el.dataset.i18n;
       el.textContent = t(key);
     });
-
-    const el = document.querySelector("[data-rule]");
-    if (el) {
-      const key = el.dataset.rule;
-      this.render_rule(t(key), key);
-    }
   }
 
   set_i18n(el, key) {
