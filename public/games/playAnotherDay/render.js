@@ -2,6 +2,7 @@ import { t } from "../../i18n/i18n.js";
 import { Common } from "../../js/common.js";
 
 const common = new Common();
+common.render_rule("rule.game1");
 
 //== const Element ==
 const score_board = document.getElementById("score_board");

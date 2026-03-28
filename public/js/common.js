@@ -93,19 +93,35 @@ export class Common {
         set_lang(event.currentTarget.value);
         localStorage.setItem("lang", event.currentTarget.value);
         this.set_language();
+        this.set_rule();
       });
       div.appendChild(select);
       container.appendChild(div);
     }
   }
 
-  render_rule(rule, path) {
+  render_rule(path) {
+    const rule = t(path);
     if (rule == null) return;
 
     const container = document.getElementById("rule_container");
     container.dataset.rule = container.dataset.rule
       ? container.dataset.rule
       : path;
+
+    container.innerHTML = "";
+    for (const state of rule) {
+      const el = document.createElement(state.type);
+      el.innerHTML = state.text;
+      container.appendChild(el);
+    }
+  }
+
+  set_rule() {
+    const container = document.getElementById("rule_container");
+    if (!container) return;
+    const rule = t(container.dataset.rule);
+    if (!rule) return;
 
     container.innerHTML = "";
     for (const state of rule) {

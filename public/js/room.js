@@ -5,8 +5,7 @@ const common = new Common();
 
 const game_type = localStorage.getItem("game_type");
 const user_name = localStorage.getItem("user_name");
-const rule = t(`rule.${game_type}`);
-if (rule) common.render_rule(rule, `rule.${game_type}`);
+common.render_rule(`rule.${game_type}`);
 
 const socket = io();
 
