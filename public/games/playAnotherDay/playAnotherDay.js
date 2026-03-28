@@ -40,6 +40,7 @@ function on_id_updated(status) {
 //--unsuccess--
 socket.on("unsuccess", ({ room, status, type, reason, move }) => {
   if (type == null) return;
+  console.log("unsuccess : ", type);
 
   let data = null;
   switch (type) {
@@ -90,23 +91,8 @@ socket.on("status_updated", ({ status, detail, type }) => {
     case "player_moved":
       console.log("detail: ", detail);
       const player = status.players.find((p) => p.id === socket.id);
-      if (detail == "turn_updated") {
-        data = make_data(
-          status,
-          "status_updated",
-          type,
-          true,
-          !player.can_move,
-        );
-      } else if (detail == "current_card_updated") {
-        data = make_data(
-          status,
-          "status_updated",
-          type,
-          true,
-          !player.can_move,
-        );
-      }
+      data = make_data(status, "status_updated", type, true, !player.can_move);
+      data.move_detail = detail;
       on_player_moved(status);
       break;
   }

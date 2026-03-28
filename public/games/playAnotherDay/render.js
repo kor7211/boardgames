@@ -49,7 +49,7 @@ const image_map = {
   card_order_5: "/images/game1/playAnotherDay_card_order_5.png",
 };
 
-export function render({ status, id, type, detail, functions }) {
+export function render({ status, id, type, detail, functions, move_detail }) {
   if (functions.exit_game.able) {
     exit.onclick = null;
     exit.onclick = () => {
@@ -77,21 +77,41 @@ export function render({ status, id, type, detail, functions }) {
     submit.classList.remove("able");
   }
 
+  const user = status.players.find((p) => p.id == id);
+  if (!user) {
+    console.log("render: player_not_found");
+    return;
+  }
+
+  const data = {
+    status: status,
+    user: user,
+  };
+
   switch (type) {
     case "success":
       switch (detail) {
         case "submittion_applied":
+          switch (status.turn) {
+            case "select":
+              render_my_hands(data);
+              break;
+            case "target":
+              overlay.classList.add("hidden");
+          }
           break;
         case "id_updated":
           break;
       }
       break;
+
     case "unsuccess":
       switch (detail) {
         case "submittion_not_applied":
           break;
       }
       break;
+
     case "status_updated":
       switch (detail) {
         case "init":
@@ -100,37 +120,37 @@ export function render({ status, id, type, detail, functions }) {
         case "player_reconnected":
           break;
         case "player_moved":
-          const user = status.players.find((p) => p.id == id);
-          if (!user) {
-            console.log("render: player_not_found");
-            return;
-          }
-          const data = {
-            status: status,
-            user: user,
-          };
+          console.log(move_detail);
+          switch (move_detail) {
+            case "turn_updated":
+            case "current_card_updated":
+              init_player_fields(data);
+              render_score_board(data);
+              render_card_order(data);
 
-          init_player_fields(data);
-          render_score_board(data);
-          render_card_order(data);
-
-          switch (status.turn) {
-            case "init":
+              switch (status.turn) {
+                case "init":
+                  break;
+                case "select":
+                  render_select_table(data);
+                  render_my_hands(data);
+                  break;
+                case "target":
+                  render_target_table(data);
+                  render_my_hands(data);
+                  if (user.can_move) render_targeter(data);
+                  break;
+                case "point":
+                  break;
+                case "end":
+                  break;
+                case "back":
+                  break;
+              }
               break;
-            case "select":
+            case "card_selected":
+              render_score_board(data);
               render_select_table(data);
-              render_my_hands(data);
-              break;
-            case "target":
-              render_target_table(data);
-              render_my_hands(data);
-              if (user.can_move) render_targeter(data);
-              break;
-            case "point":
-              break;
-            case "end":
-              break;
-            case "back":
               break;
           }
           break;
@@ -271,12 +291,22 @@ function render_select_table(data) {
     el.innerHTML = "";
   });
 
+  const status = data.status;
+  const user = data.user;
+
   player_list.forEach((p) => {
-    const divs = make_board_card({
-      player: p,
-      strength: 0,
-      is_empty: !(p.ready && !p.death),
-    });
+    const divs =
+      p.unique_id == user.unique_id
+        ? make_board_card({
+            player: p,
+            strength: p.card_selected ?? 0,
+            is_empty: !(p.ready && !p.death),
+          })
+        : make_board_card({
+            player: p,
+            strength: 0,
+            is_empty: !(p.ready && !p.death),
+          });
 
     divs.div_card.classList.add("unselectable");
 

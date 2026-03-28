@@ -83,6 +83,8 @@ module.exports = {
         }
         if (!is_all_ready(new_status.players)) {
           new_status.does_wait = true;
+          emit_prop.emit_all = true;
+          emit_prop.emit_detail = "card_selected";
           break;
         } else {
           new_status.does_wait = false;
@@ -174,14 +176,6 @@ module.exports = {
         }
         break;*/
 
-        //check targetable player
-        const count = new_status.cards_selected.filter(
-          (c) => c == new_status.current_card,
-        ).length;
-        new_status.cards_selected = new_status.cards_selected.filter(
-          (c) => c != new_status.current_card,
-        );
-
         //kill targeted player
         if (new_status.card_target) {
           const players_dead = new_status.players.filter(
@@ -205,9 +199,20 @@ module.exports = {
           }
         });
 
+        new_status.current_card += 1;
+
+        //check targetable player
+        const count = new_status.cards_selected.filter(
+          (c) => c == new_status.current_card,
+        ).length;
+        new_status.cards_selected = new_status.cards_selected.filter(
+          (c) => c != new_status.current_card,
+        );
+
         //end of target
-        if (new_status.current_card == 5) {
+        if (new_status.current_card > 5) {
           new_status.round++;
+          new_status.current_card = 0;
           const count = new_status.players.filter((p) => !p.death).length;
 
           new_status.players.forEach((p) => {
@@ -229,13 +234,12 @@ module.exports = {
 
         //decide tageter
         new_status.players = all_can_move(new_status.players, false);
-        if (count == 1) {
+        if (count == 1 && new_status.cards_selected.length > 0) {
           new_status.players.find(
             (p) => p.card_selected == new_status.current_card,
           ).can_move = true;
         }
 
-        new_status.current_card += 1;
         emit_prop.emit_all = true;
         emit_prop.emit_detail = "current_card_updated";
         break;
@@ -340,7 +344,7 @@ module.exports = {
         };
       case "target":
         console.log("game1: ", move.value, ",", new_status.current_card);
-        if (player.can_move == false) {
+        if (!player.can_move) {
           return {
             result: move.value == null,
             reason: "not_turn",
