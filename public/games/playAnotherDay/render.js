@@ -276,7 +276,7 @@ function render_my_hands(data) {
     });
 
     if (user.can_move && status.turn == "select" && !user.ready) {
-      div.classList.add("hands able");
+      div.classList.add("hands", "able");
       div.addEventListener("click", (event) => {
         update_card_selected(event.currentTarget, card);
       });
@@ -404,7 +404,7 @@ function render_targeter(data) {
         update_card_selected(event.currentTarget, i);
         update_submit(true);
       });
-      div.classList.add("targeter able");
+      div.classList.add("targeter", "able");
     }
     targeter.appendChild(div);
   }
