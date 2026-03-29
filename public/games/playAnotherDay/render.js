@@ -150,6 +150,7 @@ export function render({ status, id, type, detail, functions, move_detail }) {
               }
               break;
             case "card_selected":
+              init_player_fields(data);
               render_score_board(data);
               render_select_table(data);
               break;
@@ -256,6 +257,7 @@ function render_card_order(data) {
       strength: 0,
     });
   }
+  div.classList.add("order");
 
   center_field.appendChild(div);
 }
@@ -293,19 +295,23 @@ function render_select_table(data) {
   const status = data.status;
   const user = data.user;
 
+  let divs = null;
   player_list.forEach((p) => {
-    const divs =
-      p.unique_id == user.unique_id
-        ? make_board_card({
-            player: p,
-            strength: p.card_selected ?? 0,
-            is_empty: !(p.ready && !p.death),
-          })
-        : make_board_card({
-            player: p,
-            strength: 0,
-            is_empty: !(p.ready && !p.death),
-          });
+    if (p.unique_id == user.unique_id) {
+      console.log("rst: user: ", p.card_selected);
+      divs = make_board_card({
+        player: p,
+        strength: p.card_selected ?? 0,
+        is_empty: !(p.ready && !p.death),
+      });
+    } else {
+      console.log("rst: player: ");
+      divs = make_board_card({
+        player: p,
+        strength: 0,
+        is_empty: !(p.ready && !p.death),
+      });
+    }
 
     document
       .querySelector(`.player_field[data-owner="${p.unique_id}"]`)
@@ -375,7 +381,7 @@ function render_targeter(data) {
   const user = data.user;
   const status = data.status;
 
-  const button = document.getElementById("submit_target");
+  const button = document.getElementById("submit_targeter");
 
   function update_submit(enable = false) {
     if (enable) {
@@ -394,6 +400,7 @@ function render_targeter(data) {
       owner: "targeter",
       strength: i,
     });
+    div.classList.add("targeter");
     if (i <= status.card_min) {
       div.addEventListener("click", () => {
         update_card_selected();
@@ -404,12 +411,10 @@ function render_targeter(data) {
         update_card_selected(event.currentTarget, i);
         update_submit(true);
       });
-      div.classList.add("targeter", "able");
+      div.classList.add("able");
     }
     targeter.appendChild(div);
   }
-
-  targeter.appendChild(document.createElement("div").appendChild(button));
   common.display_modal("targeter", false);
 }
 //--make function--

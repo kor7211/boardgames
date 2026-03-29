@@ -50,8 +50,13 @@ body {
 
 .center-menu {
   background-color: var(--bg-main-color);
-  background: radial-gradient(circle, transparent 20%, var(--bg-accent-color) 20%, var(--bg-accent-color) 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 40px 40px, linear-gradient(#444cf7 3.2px, transparent 3.2px) 0 -1.6px, linear-gradient(90deg, #444cf7 3.2px, #e5e5f7 3.2px) -1.6px 0;
+  background: 
+    radial-gradient(circle, transparent 20%, var(--bg-main-color) 20%, var(--bg-main-color) 80%, transparent 80%, transparent),
+    radial-gradient(circle, transparent 20%, var(--bg-main-color) 20%, var(--bg-main-color) 80%, transparent 80%, transparent) 40px 40px,
+    linear-gradient(var(--bg-accent-color) 3.2px, transparent 3.2px) 0 -1.6px,
+    linear-gradient(90deg, var(--bg-accent-color) 3.2px, var(--bg-main-color) 3.2px) -1.6px 0;
   background-size: 80px 80px, 80px 80px, 40px 40px, 40px 40px;
+
 }
 
 #wrapper {
@@ -91,11 +96,15 @@ span.tip {
   background-position: center;
   background-repeat: no-repeat;
 
-  border-radius: 10px;
-  box-shadow: 0 4px 10px var(--gray-1);
+  border-radius: 10%;
+  box-shadow: 0 4px 10px var(--gray-3);
   filter: saturate(60%);
   cursor: default;
   transition: transform 0.1s ease;
+}
+
+.class.order {
+  filter: saturate(100%);
 }
 
 .card.disable {
@@ -109,6 +118,7 @@ span.tip {
 }
 
 .card.able {
+  filter: saturate(100%);
   cursor: pointer;
 }
 
@@ -126,12 +136,16 @@ span.tip {
   z-index: 100;
 }
 
+.card.targeter {
+  box-shadow: none;
+}
+
 .card.able.targeter:hover {
-  transform: scale(-5%);
+  transform: scale(105%);
 }
 .card.able.targeter.selected {
   outline: 3px solid var(--cd-selected-color);
-  transform: scale(5%);
+  transform: scale(90%);
 }
 
 
@@ -230,9 +244,6 @@ span.tip {
 
 .center_field {
   grid-area: center;
-}
-.center_field .card{
-  box-shadow: 0 2px 5px var(--gray-1);
 }
 
 .player_field {
