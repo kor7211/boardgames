@@ -256,7 +256,6 @@ function render_card_order(data) {
       strength: 0,
     });
   }
-  div.classList.add("unselectable");
 
   center_field.appendChild(div);
 }
@@ -277,11 +276,10 @@ function render_my_hands(data) {
     });
 
     if (user.can_move && status.turn == "select" && !user.ready) {
+      div.classList.add("hands able");
       div.addEventListener("click", (event) => {
         update_card_selected(event.currentTarget, card);
       });
-    } else {
-      div.classList.add("unselectable");
     }
     hands_user.appendChild(div);
   });
@@ -309,8 +307,6 @@ function render_select_table(data) {
             is_empty: !(p.ready && !p.death),
           });
 
-    divs.div_card.classList.add("unselectable");
-
     document
       .querySelector(`.player_field[data-owner="${p.unique_id}"]`)
       .appendChild(divs.div_info);
@@ -335,6 +331,7 @@ function render_target_table(data) {
         strength: 0,
         is_empty: true,
       });
+      divs.classList.add("invisible");
     } else if (p.dead_round) {
       divs = make_board_card({
         player: p,
@@ -355,7 +352,6 @@ function render_target_table(data) {
         strength: p.card_selected_record,
         is_empty: false,
       });
-      divs.div_card.classList.add("hunted");
     } else {
       divs = make_board_card({
         player: p,
@@ -363,7 +359,6 @@ function render_target_table(data) {
         is_empty: false,
       });
     }
-    divs.div_card.classList.add("unselectable");
 
     document
       .querySelector(`.player_field[data-owner = "${p.unique_id}"]`)
@@ -380,9 +375,7 @@ function render_targeter(data) {
   const user = data.user;
   const status = data.status;
 
-  const button = common.set_i18n(document.createElement("button"), "ui.submit");
-  button.id = "submit_target";
-  button.classList.add("button-l");
+  const button = document.getElementById("submit_target");
 
   function update_submit(enable = false) {
     if (enable) {
@@ -411,7 +404,7 @@ function render_targeter(data) {
         update_card_selected(event.currentTarget, i);
         update_submit(true);
       });
-      div.classList.add("able");
+      div.classList.add("targeter able");
     }
     targeter.appendChild(div);
   }

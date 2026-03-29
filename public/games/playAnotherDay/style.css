@@ -4,7 +4,16 @@
     var(--card-width) * 89 / 58
   );
 
-  
+  --cd-selected-color: hsl(51, 100%, 62%);
+}
+/* ============================= */
+.theme-day {
+  --bg-main-color: hsl(37, 100%, 96%);
+  --bg-accent-color: hsl(13, 100%, 84%);
+}
+.theme-night {
+  --bg-main-color: hsl(231, 100%, 97%);
+  --bg-accent-color: hsl(230, 39%, 68%);
 }
 /* ============================= */
 html, body {
@@ -14,6 +23,7 @@ html, body {
 }
 
 body {
+  /*
   background: 
   linear-gradient(
     to bottom,
@@ -27,17 +37,27 @@ body {
     #789e73 20px,
     #6d9269 20px,
     #6d9269 40px
+  );*/
+  background:
+  repeating-linear-gradient(
+    45deg,
+    var(--main-color),
+    var(--main-color) 20px,
+    var(--main-color-shade) 20px,
+    var(--main-color-shade) 40px
   );
 }
 
+.center-menu {
+  background-color: var(--bg-main-color);
+  background: radial-gradient(circle, transparent 20%, var(--bg-accent-color) 20%, var(--bg-accent-color) 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 40px 40px, linear-gradient(#444cf7 3.2px, transparent 3.2px) 0 -1.6px, linear-gradient(90deg, #444cf7 3.2px, #e5e5f7 3.2px) -1.6px 0;
+  background-size: 80px 80px, 80px 80px, 40px 40px, 40px 40px;
+}
+
 #wrapper {
-  display: flex;
-  flex-direction: column;
   width: min(1200px, 100%);
-  height: 100dvh;
-  margin: 0 auto;
   
-  box-shadow: 0 0 50px rgba(0,0,0,0.5), 0 0 10px rgba(0, 0, 0, 0.8);
+  /*box-shadow: 0 0 50px rgba(0,0,0,0.5), 0 0 10px rgba(0, 0, 0, 0.8);*/
 }
 
 #game_area {
@@ -72,48 +92,58 @@ span.tip {
   background-repeat: no-repeat;
 
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.card:not(.unselectable):hover {
-  transform: translateY(-5px);
-  z-index: 50;
-}
-
-.card:not(.unselectable).selected {
-  outline: 3px solid gold;
-  transform: translateY(-20px);
-  z-index: 100;
-}
-
-.card.unselectable {
+  box-shadow: 0 4px 10px var(--gray-1);
   filter: saturate(60%);
   cursor: default;
-}
-
-.card.hunted {
-  filter: grayscale(50%);
-}
-
-.card.targeted {
-  filter: grayscale(1) sepia(50%);
-}
-
-.card.hunting {
-  filter: saturate(100%);
-  box-shadow: 0 4px 10px rgba(248, 245, 56, 0.676);
+  transition: transform 0.1s ease;
 }
 
 .card.disable {
   filter: grayscale(1) brightness(0.6);
+  cursor: not-allowed;
 }
 
 .card.invisible {
-  filter: grayscale(1) opacity(25%);
+  filter: grayscale(1);
   box-shadow: none;
 }
+
+.card.able {
+  cursor: pointer;
+}
+
+.card.able.hands:hover {
+  transform: translateY(calc(
+    var(--card-height) * 1/3 * -1
+  ));
+  z-index: 50;
+}
+.card.able.hands.selected {
+  outline: 3px solid var(--cd-selected-color);
+  transform: translateY(calc(
+    var(--card-height) * 1/2 * -1
+  ));
+  z-index: 100;
+}
+
+.card.able.targeter:hover {
+  transform: scale(-5%);
+}
+.card.able.targeter.selected {
+  outline: 3px solid var(--cd-selected-color);
+  transform: scale(5%);
+}
+
+
+.card.targeted {
+  filter: grayscale(1) sepia(50%);
+}
+.card.hunting {
+  filter: saturate(100%);
+  outline: 3px solid var(--cd-selected-color);
+}
+
+
 
 /* ============================= */
 #hands_user {
@@ -143,22 +173,6 @@ span.tip {
 #hands_user .card:first-child {
   margin-left: 0;
 }
-
-#hands_user .card:not(.unselectable):hover {
-  transform: translateY(calc(
-    var(--card-height) * 1/3 * -1
-  ));
-  z-index: 50;
-}
-
-#hands_user .card:not(.unselectable).selected {
-  outline: 3px solid gold;
-  transform: translateY(calc(
-    var(--card-height) * 1/2 * -1
-  ));
-  z-index: 100;
-}
-
 /* ============================= */
 
 #table {
@@ -218,7 +232,7 @@ span.tip {
   grid-area: center;
 }
 .center_field .card{
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.112);
+  box-shadow: 0 2px 5px var(--gray-1);
 }
 
 .player_field {
@@ -242,111 +256,10 @@ span.tip {
 }
 
 /* ============================= */
-
-#top_menu {
-  display: flex;
-  height: 40px;
-  align-items: center;
-  position: relative;
-}
-
-#submit {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-
-  color: #fff;
-  background-color: #eb6100;
-  border: 0px;
-  border-bottom: 5px solid #b84c00;
-  border-radius: 12px;
-  font-size: 20px;
-  padding: 6px 28px;
-}
-#submit.selected {
-  cursor: pointer;
-}
-#submit.disable {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-#submit:not(.selected) {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-#submit.selected:not(.disable):hover {
-  margin-top: 3px;
-  color: #fff;
-  background: #f56500;
-  border-bottom: 2px solid #b84c00;
-  transition: 0.15s;
-}
- 
-#right_group {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-}
-
-#open_score {
-  margin-right: 1px;
-
-  font-size: 30px;
-  color: rgb(82, 82, 82);
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-#open_score:hover {
-  color: rgb(55, 178, 227);
-  transform: scale(1.2);
-  transition: 0.15s;
-}
-
-#open_setting {
-  font-size: 33px;
-  color: rgb(82, 82, 82);
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-#open_setting:hover {
-  color: rgb(55, 178, 227);
-  transform: scale(1.2);
-  transition: 0.15s;
-}
-
-#open_exit {
-  font-size: 25px;
-  color: rgb(82, 82, 82);
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-#open_exit:hover {
-  color: rgb(237, 81, 53);
-  transform: scale(1.2);
-  transition: 0.15s;
-}
-/* ============================= */
-
-.modal.hidden {
-  display: none;
-}
-
-#score_modal,
-#targeter_modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  min-width: 300px;
-}
-
 #targeter {
   display: flex;
   justify-content: center;
 }
-
 /* ============================= */
 
 #score_board table {
@@ -373,25 +286,6 @@ span.tip {
 #score_board td.user_name {
   background-color: rgb(183, 255, 231);
 }
-
-/* ============================= */
-
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  z-index: 1000;
-}
-
-#overlay.hidden {
-  display: none;
-}
-
 /* ============================= */
 /*
 
