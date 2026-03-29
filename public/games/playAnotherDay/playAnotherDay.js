@@ -179,5 +179,14 @@ function on_end_render(status) {
       if (status.players.find((p) => p.id === socket.id).can_move == false) {
         empty_submit(status);
       }
+    case "point":
+      empty_submit(status);
+      break;
+    case "point":
+      empty_submit(status);
+      break;
+    case "end":
+      empty_submit(status);
+      break;
   }
 }

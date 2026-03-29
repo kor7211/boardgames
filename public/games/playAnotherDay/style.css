@@ -138,13 +138,20 @@ span.tip {
 
 .card.targeter {
   box-shadow: none;
+  filter: grayscale(80%);
+}
+
+.card.targeter.able {
+  filter: grayscale(0%);
 }
 
 .card.able.targeter:hover {
+  filter: saturate(100%);
   transform: scale(105%);
 }
 .card.able.targeter.selected {
   outline: 3px solid var(--cd-selected-color);
+  filter: saturate(100%);
   transform: scale(90%);
 }
 

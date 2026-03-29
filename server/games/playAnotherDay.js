@@ -245,6 +245,7 @@ module.exports = {
         break;
 
       case "point":
+        console.log("here");
         player.ready = true;
         if (!is_all_ready(new_status.players)) {
           new_status.does_wait = true;
